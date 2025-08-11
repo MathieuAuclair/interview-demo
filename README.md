@@ -4,6 +4,7 @@
 
 ```bash
  sudo pacman -S dotnet-sdk-8.0
+ sudo pacman -S aspnet-runtime-8.0
  sudo pacman -S docker
 ```
 
@@ -16,4 +17,10 @@ docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=StrongPassw0rd\!" \
    -p 1433:1433 \
    -d \
    mcr.microsoft.com/mssql/server:2022-latest
+```
+
+# Запуск проекта (локально)
+
+```bash
+dotnet run
 ```
