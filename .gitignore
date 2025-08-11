@@ -1,0 +1,58 @@
+# -------------------------
+# .NET build artifacts
+# -------------------------
+bin/
+obj/
+out/
+*.exe
+*.dll
+*.pdb
+*.cache
+*.log
+*.user
+*.vs/
+*.vscode/
+*.sln
+
+# -------------------------
+# Entity Framework Migrations (optional)
+# Uncomment if you don't want to track migrations
+# -------------------------
+# Migrations/
+
+# -------------------------
+# Rider / VS Code / VS files
+# -------------------------
+.idea/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# -------------------------
+# React / Node.js
+# -------------------------
+node_modules/
+build/
+dist/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+.DS_Store
+
+# -------------------------
+# Environment files
+# -------------------------
+.env
+.env.*.local
+
+# -------------------------
+# Misc
+# -------------------------
+*.tmp
+*.bak
+*.swp
