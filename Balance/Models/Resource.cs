@@ -16,5 +16,9 @@ namespace Balance.Models
 
         [Column]
         public bool isArchived { get; set; }
+
+        public virtual IEnumerable<ResourceReciept> ResourceReciepts { get; set; }
+        public virtual IEnumerable<ShipmentResource> ShipmentResources { get; set; }
+        public virtual IEnumerable<Balance> Balances { get; set; }
     }
 }

@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Balance.Models
 {
-    public class AppDbContext : DbContext
+    public class BalanceDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        public BalanceDbContext(DbContextOptions<BalanceDbContext> options) : base(options)
         {
         }
 

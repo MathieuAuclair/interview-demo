@@ -7,7 +7,7 @@ namespace Balance.Models
     {
         [Key]
         public int Id { get; set; }
-        
+
         [Column]
         [MinLength(6)]
         [MaxLength(50)]
@@ -26,5 +26,7 @@ namespace Balance.Models
         public int? CustomerId { get; set; }
 
         public virtual Customer Customer { get; set; }
+        
+        public virtual IEnumerable<ShipmentResource> ShipmentResources { get; set; }
     }
 }

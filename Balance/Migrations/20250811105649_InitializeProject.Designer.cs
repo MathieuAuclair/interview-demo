@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace WebApp.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
+    [DbContext(typeof(BalanceDbContext))]
     [Migration("20250811105649_InitializeProject")]
     partial class InitializeProject
     {

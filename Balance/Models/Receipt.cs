@@ -17,5 +17,7 @@ namespace Balance.Models
         [Column]
         [Display(Name = "дата")]
         public DateTime Date { get; set; }
+
+        public virtual IEnumerable<ResourceReciept> ResourceReciepts { get; set; }
     }
 }

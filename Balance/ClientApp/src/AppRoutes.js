@@ -1,19 +1,18 @@
-import { Counter } from "./components/Counter";
-import { FetchData } from "./components/FetchData";
-import { Home } from "./components/Home";
+import UpdateResourceInput from "./components/resource/UpdateResourceInput";
+import ResourcePage from "./components/resource/ResourcePage";
 
 const AppRoutes = [
   {
-    index: true,
-    element: <Home />
+    path: '/dashboard/resource',
+    element: <ResourcePage isArchived={false} />
   },
   {
-    path: '/counter',
-    element: <Counter />
+    path: '/dashboard/resource/archived',
+    element: <ResourcePage isArchived={true} />
   },
   {
-    path: '/fetch-data',
-    element: <FetchData />
+    path: '/dashboard/resource/update',
+    element: <UpdateResourceInput />
   }
 ];
 

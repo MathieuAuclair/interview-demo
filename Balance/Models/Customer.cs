@@ -22,5 +22,7 @@ namespace Balance.Models
 
         [Column]
         public bool IsArchived { get; set; }
+
+        public virtual IEnumerable<Shipment> Shipments { get; set; }
     }
 }
