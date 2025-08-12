@@ -7,6 +7,8 @@ import AddUnitInput from "./components/units/AddUnitInput";
 import CustomerPage from "./components/customer/CustomerPage";
 import UpdateCustomerInput from "./components/customer/UpdateCustomerInput";
 import AddCustomerInput from "./components/customer/AddCustomerInput";
+import ShipmentPage from "./components/shipments/ShipmentPage";
+import UpdateShipmentInput from "./components/shipments/UpdateShipmentInput";
 
 const AppRoutes = [
   // Resources
@@ -59,6 +61,23 @@ const AppRoutes = [
   {
     path: "/dashboard/customer/add",
     element: <AddCustomerInput />,
+  },
+  // Shipments
+  {
+    path: "/dashboard/shipment",
+    element: <ShipmentPage isArchived={false} />,
+  },
+  {
+    path: "/dashboard/shipment/archived",
+    element: <ShipmentPage isArchived={true} />,
+  },
+  {
+    path: "/dashboard/shipment/update",
+    element: <UpdateShipmentInput />,
+  },
+  {
+    path: "/dashboard/shipment/add",
+    element: <UpdateShipmentInput />,
   },
 ];
 

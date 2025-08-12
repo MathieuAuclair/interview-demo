@@ -5,7 +5,7 @@ export default function CustomerPage({ isArchived }) {
   const { state } = useLocation();
 
   const [isLoading, setIsLoading] = useState(true);
-  const [customers, setcustomers] = useState([]);
+  const [customers, setCustomers] = useState([]);
   const [alert, setAlert] = useState(state?.message);
 
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ export default function CustomerPage({ isArchived }) {
     fetch(isArchived ? "customer?isArchived=true" : "customer")
       .then((response) => {
         response.json().then((customers) => {
-          setcustomers(customers);
+          setCustomers(customers);
         });
       })
       .finally(() => {
@@ -50,7 +50,7 @@ export default function CustomerPage({ isArchived }) {
         return;
       }
 
-      setcustomers((prev) => prev.filter((r) => r.id !== customer.id));
+      setCustomers((prev) => prev.filter((r) => r.id !== customer.id));
 
       setAlert({
         message: "клиент удален успешно",

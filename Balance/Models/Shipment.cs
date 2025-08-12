@@ -19,6 +19,10 @@ namespace Balance.Models
         public DateTime Date { get; set; }
 
         [Column]
+        [Display(Name = "статус")]
+        public bool IsSigned { get; set; }
+
+        [Column]
         public bool IsArchived { get; set; }
 
         [Column]
@@ -26,7 +30,7 @@ namespace Balance.Models
         public int? CustomerId { get; set; }
 
         public virtual Customer Customer { get; set; }
-        
+
         public virtual IEnumerable<ShipmentResource> ShipmentResources { get; set; }
     }
 }
