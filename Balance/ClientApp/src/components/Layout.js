@@ -13,19 +13,19 @@ export class Layout extends Component {
             <hr />
             <h3>Склад</h3>
             <div className="d-flex flex-column gap-3 my-3">
-              <a className="btn btn-outline-light" href="#">
+              <a className="btn btn-outline-light" href="/">
                 Баланс
               </a>
-              <a className="btn btn-outline-light" href="#">
+              <a className="btn btn-outline-light" href="/">
                 Поступления
               </a>
-              <a className="btn btn-outline-light" href="#">
+              <a className="btn btn-outline-light" href="/">
                 Отгрузки
               </a>
             </div>
             <h3>Справочники</h3>
             <div className="d-flex flex-column gap-3 my-3">
-              <a className="btn btn-outline-light" href="#">
+              <a className="btn btn-outline-light" href="/dashboard/customer">
                 Клиенты
               </a>
               <a className="btn btn-outline-light" href="/dashboard/unit">

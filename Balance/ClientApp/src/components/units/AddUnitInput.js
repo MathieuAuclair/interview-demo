@@ -50,21 +50,21 @@ export default function AddUnitInput() {
 
   return (
     <div>
-      <h1>Добавить единиц</h1>
+      <h1>Добавить единицы измерения</h1>
       <form onSubmit={handleSubmit}>
-        <div class="form-floating mb-3">
+        <div className="form-floating mb-3">
           <input
             value={name}
             minLength={3}
             maxLength={50}
             onChange={(e) => setName(e.target.value)}
             required
-            class="form-control"
+            className="form-control"
             id="floatingInput"
           />
-          <label for="floatingInput">название</label>
+          <label htmlFor="floatingInput">название</label>
         </div>
-        <button class="btn btn-primary" type="submit">
+        <button className="btn btn-primary" type="submit">
           Сохранить
         </button>
       </form>

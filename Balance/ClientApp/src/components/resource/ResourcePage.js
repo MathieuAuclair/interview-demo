@@ -66,7 +66,7 @@ export default function ResourcePage({ isArchived }) {
       <h1>Ресурсы</h1>
       {alert && (
         <div
-          class={`alert alert-${alert.isError ? "danger" : "info"}`}
+          className={`alert alert-${alert.isError ? "danger" : "info"}`}
           role="alert"
         >
           {alert.message}
@@ -87,10 +87,11 @@ export default function ResourcePage({ isArchived }) {
       ) : (
         <table className="table">
           <thead>
-            <th>
-              <td>Название</td>
-              <td></td>
-            </th>
+            <tr>
+              <th>Название</th>
+              <th>Обновление</th>
+              <th>Удаление</th>
+            </tr>
           </thead>
           <tbody>
             {resources.map((resource) => {

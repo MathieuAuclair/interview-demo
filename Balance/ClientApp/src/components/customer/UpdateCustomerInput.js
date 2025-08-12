@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export default function UpdateUnitInput() {
+export default function UpdateCustomerInput() {
   const navigate = useNavigate();
 
   const { state } = useLocation();
-  const { unit } = state;
+  const { customer } = state;
 
-  const [name, setName] = useState(unit.name);
+  const [name, setName] = useState(customer.name);
+  const [address, setAddress] = useState(customer.address);
 
   const handleFailureNavigation = () => {
-    navigate(`/dashboard/unit`, {
+    navigate(`/dashboard/customer`, {
       state: {
         message: {
-          message: "Не удалось обновить единица.",
+          message: "Не удалось обновить клиент.",
           isError: true,
         },
       },
@@ -21,20 +22,23 @@ export default function UpdateUnitInput() {
   };
 
   const handleSubmit = async (isArchived) => {
-    const data = { id: unit.id, name, isArchived };
+    const data =
+      isArchived === customer.isArchived
+        ? { id: customer.id, name, address, isArchived }
+        : { ...customer, isArchived };
 
     try {
-      const response = await fetch("/unit", {
+      const response = await fetch("/customer", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
 
       if (response.ok) {
-        navigate(`/dashboard/unit`, {
+        navigate(`/dashboard/customer`, {
           state: {
             message: {
-              message: "Единица успешно обновлен!",
+              message: "Клиент успешно обновлен!",
               isError: false,
             },
           },
@@ -52,14 +56,14 @@ export default function UpdateUnitInput() {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        handleSubmit(unit.isArchived);
+        handleSubmit(customer.isArchived);
       }}
     >
-      <h1>Обновление единицы измерения</h1>
+      <h1>Обновление клиент</h1>
       <div className="form-floating mb-3">
         <input
           value={name}
-          minLength={3}
+          minLength={6}
           maxLength={50}
           onChange={(e) => setName(e.target.value)}
           required
@@ -68,16 +72,28 @@ export default function UpdateUnitInput() {
         />
         <label htmlFor="floatingInput">название</label>
       </div>
+      <div className="form-floating mb-3">
+        <input
+          value={address}
+          minLength={6}
+          maxLength={150}
+          onChange={(e) => setAddress(e.target.value)}
+          required
+          className="form-control"
+          id="floatingInput"
+        />
+        <label htmlFor="floatingInput">адрес</label>
+      </div>
       <div className="d-flex gap-2">
         <button className="btn btn-primary" type="submit">
           Сохранить
         </button>
         <button
-          onClick={() => handleSubmit(!unit.isArchived)}
+          onClick={() => handleSubmit(!customer.isArchived)}
           className="btn btn-warning"
           type="button"
         >
-          {unit.isArchived ? "Разархивировать" : "В архив"}
+          {customer.isArchived ? "Разархивировать" : "В архив"}
         </button>
       </div>
     </form>

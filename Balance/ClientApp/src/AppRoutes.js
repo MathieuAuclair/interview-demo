@@ -4,6 +4,9 @@ import AddResourceInput from "./components/resource/AddResourceInput";
 import UpdateUnitInput from "./components/units/UpdateUnitInput";
 import UnitPage from "./components/units/UnitPage";
 import AddUnitInput from "./components/units/AddUnitInput";
+import CustomerPage from "./components/customer/CustomerPage";
+import UpdateCustomerInput from "./components/customer/UpdateCustomerInput";
+import AddCustomerInput from "./components/customer/AddCustomerInput";
 
 const AppRoutes = [
   // Resources
@@ -39,6 +42,23 @@ const AppRoutes = [
   {
     path: "/dashboard/unit/add",
     element: <AddUnitInput />,
+  },
+  // Customers
+  {
+    path: "/dashboard/customer",
+    element: <CustomerPage isArchived={false} />,
+  },
+  {
+    path: "/dashboard/customer/archived",
+    element: <CustomerPage isArchived={true} />,
+  },
+  {
+    path: "/dashboard/customer/update",
+    element: <UpdateCustomerInput />,
+  },
+  {
+    path: "/dashboard/customer/add",
+    element: <AddCustomerInput />,
   },
 ];
 

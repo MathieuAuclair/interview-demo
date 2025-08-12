@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-export default function UnitPage({ isArchived }) {
+export default function CustomerPage({ isArchived }) {
   const { state } = useLocation();
 
   const [isLoading, setIsLoading] = useState(true);
-  const [units, setunits] = useState([]);
+  const [customers, setcustomers] = useState([]);
   const [alert, setAlert] = useState(state?.message);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Извлекать обновленные данные только после отправки ресурса
+    // Извлекать обновленные данные только после отправки клиент
     setIsLoading(true);
 
-    fetch(isArchived ? "unit?isArchived=true" : "unit")
+    fetch(isArchived ? "customer?isArchived=true" : "customer")
       .then((response) => {
-        response.json().then((units) => {
-          setunits(units);
+        response.json().then((customers) => {
+          setcustomers(customers);
         });
       })
       .finally(() => {
@@ -25,35 +25,39 @@ export default function UnitPage({ isArchived }) {
       });
   }, [isArchived]);
 
-  const handleDelete = async (e, unit) => {
+  const isArchivedStyling = useMemo(() => {
+    return isArchived ? "text-muted text-decoration-line-through" : "";
+  }, [isArchived]);
+
+  const handleDelete = async (e, customer) => {
     e.preventDefault();
 
-    if (!window.confirm(`Вы уверены, что хотите удалить ${unit.name}?`)) {
+    if (!window.confirm(`Вы уверены, что хотите удалить ${customer.name}?`)) {
       return;
     }
 
     try {
-      const response = await fetch(`/unit?id=${unit.id}`, {
+      const response = await fetch(`/customer?id=${customer.id}`, {
         method: "DELETE",
       });
 
       if (!response.ok) {
         setAlert({
-          message: "Не удалось удалить или заархивировать единица",
+          message: "Не удалось удалить или заархивировать клиент",
           isError: true,
         });
 
         return;
       }
 
-      setunits((prev) => prev.filter((r) => r.id !== unit.id));
+      setcustomers((prev) => prev.filter((r) => r.id !== customer.id));
 
       setAlert({
-        message: "единица удален успешно",
+        message: "клиент удален успешно",
         isError: false,
       });
     } catch (error) {
-      console.error("Ошибка при удалении единица:", error);
+      console.error("Ошибка при удалении клиент:", error);
     }
   };
 
@@ -63,7 +67,7 @@ export default function UnitPage({ isArchived }) {
 
   return (
     <div>
-      <h1>Единицы измерения</h1>
+      <h1>Клиенты</h1>
       {alert && (
         <div
           className={`alert alert-${alert.isError ? "danger" : "info"}`}
@@ -75,42 +79,38 @@ export default function UnitPage({ isArchived }) {
       <button
         className="btn btn-secondary my-2"
         onClick={() => {
-          navigate(isArchived ? "/dashboard/unit" : "/dashboard/unit/archived");
+          navigate(
+            isArchived ? "/dashboard/customer" : "/dashboard/customer/archived"
+          );
         }}
       >
         {isArchived ? "просмотр активных" : "просмотреть архив"}
       </button>
-      {!units || units.length <= 0 ? (
-        <p>Нет единица...</p>
+      {!customers || customers.length <= 0 ? (
+        <p>Нет клиент...</p>
       ) : (
         <table className="table">
           <thead>
             <tr>
-              <th>Название</th>
+              <th>Имя</th>
+              <th>Адрес</th>
               <th>Обновление</th>
               <th>Удаление</th>
             </tr>
           </thead>
           <tbody>
-            {units.map((unit) => {
+            {customers.map((customer) => {
               return (
-                <tr key={unit.id}>
-                  <td
-                    className={
-                      isArchived
-                        ? "text-muted text-decoration-line-through"
-                        : ""
-                    }
-                  >
-                    {unit.name}
-                  </td>
+                <tr key={customer.id}>
+                  <td className={isArchivedStyling}>{customer.name}</td>
+                  <td className={isArchivedStyling}>{customer.address}</td>
                   <td>
                     <button
                       type="button"
                       className="btn btn-link"
                       onClick={() => {
-                        navigate(`/dashboard/unit/update`, {
-                          state: { unit },
+                        navigate(`/dashboard/customer/update`, {
+                          state: { customer },
                         });
                       }}
                     >
@@ -121,7 +121,7 @@ export default function UnitPage({ isArchived }) {
                     <button
                       type="button"
                       className="btn btn-link link-danger"
-                      onClick={(e) => handleDelete(e, unit)}
+                      onClick={(e) => handleDelete(e, customer)}
                     >
                       Удаление
                     </button>
@@ -135,10 +135,10 @@ export default function UnitPage({ isArchived }) {
       <button
         className="btn btn-outline-primary"
         onClick={() => {
-          navigate(`/dashboard/unit/add`);
+          navigate(`/dashboard/customer/add`);
         }}
       >
-        Добавить новый единица
+        Добавить новый клиент
       </button>
     </div>
   );

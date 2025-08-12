@@ -21,7 +21,10 @@ export default function UpdateResourceInput() {
   };
 
   const handleSubmit = async (isArchived) => {
-    const data = { id: resource.id, name, isArchived };
+    const data =
+      isArchived === resource.isArchived
+        ? { id: resource.id, name, isArchived }
+        : { ...resource, isArchived };
 
     try {
       const response = await fetch("/resource", {
@@ -31,7 +34,6 @@ export default function UpdateResourceInput() {
       });
 
       if (response.ok) {
-        console.log("OK");
         navigate(`/dashboard/resource`, {
           state: {
             message: {
@@ -50,36 +52,37 @@ export default function UpdateResourceInput() {
   };
 
   return (
-    <div>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit(resource.isArchived);
+      }}
+    >
       <h1>Обновление ресурсы</h1>
-      <div class="form-floating mb-3">
+      <div className="form-floating mb-3">
         <input
           value={name}
           minLength={3}
           maxLength={50}
           onChange={(e) => setName(e.target.value)}
           required
-          class="form-control"
+          className="form-control"
           id="floatingInput"
         />
-        <label for="floatingInput">название</label>
+        <label htmlFor="floatingInput">название</label>
       </div>
       <div className="d-flex gap-2">
-        <button
-          onClick={() => handleSubmit(resource.isArchived)}
-          class="btn btn-primary"
-          type="submit"
-        >
+        <button className="btn btn-primary" type="submit">
           Сохранить
         </button>
         <button
           onClick={() => handleSubmit(!resource.isArchived)}
-          class="btn btn-warning"
-          type="submit"
+          className="btn btn-warning"
+          type="button"
         >
           {resource.isArchived ? "Разархивировать" : "В архив"}
         </button>
       </div>
-    </div>
+    </form>
   );
 }

@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function AddResourceInput() {
+export default function AddCustomerInput() {
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
 
   const handleFailureNavigation = (trace) => {
-    navigate(`/dashboard/resource`, {
+    navigate(`/dashboard/customer`, {
       state: {
         message: {
-          message: "Не удалось добавить ресурс",
+          message: "Не удалось добавить клиент",
           isError: true,
         },
       },
@@ -22,20 +23,20 @@ export default function AddResourceInput() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const resource = { name, isArchived: false };
+    const customer = { name, address, isArchived: false };
 
     try {
-      const response = await fetch("/resource", {
+      const response = await fetch("/customer", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(resource),
+        body: JSON.stringify(customer),
       });
 
       if (response.ok) {
-        navigate(`/dashboard/resource`, {
+        navigate(`/dashboard/customer`, {
           state: {
             message: {
-              message: "Новый ресурс успешно добавлен",
+              message: "Новый клиент успешно добавлен",
               isError: false,
             },
           },
@@ -50,19 +51,31 @@ export default function AddResourceInput() {
 
   return (
     <div>
-      <h1>Добавить ресурсы</h1>
+      <h1>Добавить единиц</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-floating mb-3">
           <input
             value={name}
-            minLength={3}
+            minLength={6}
             maxLength={50}
             onChange={(e) => setName(e.target.value)}
             required
             className="form-control"
             id="floatingInput"
           />
-          <label htmlFor="floatingInput">название</label>
+          <label htmlFor="floatingInput">имя</label>
+        </div>
+        <div className="form-floating mb-3">
+          <input
+            value={address}
+            minLength={6}
+            maxLength={150}
+            onChange={(e) => setAddress(e.target.value)}
+            required
+            className="form-control"
+            id="floatingInput"
+          />
+          <label htmlFor="floatingInput">адрес</label>
         </div>
         <button className="btn btn-primary" type="submit">
           Сохранить

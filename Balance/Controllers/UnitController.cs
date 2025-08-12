@@ -9,9 +9,9 @@ namespace Balance.Controller
     public class UnitController : ControllerBase
     {
         private readonly BalanceDbContext _dbContext;
-        private readonly ILogger<ReceiptController> _logger;
+        private readonly ILogger<UnitController> _logger;
 
-        public UnitController(ILogger<ReceiptController> logger, BalanceDbContext dbContext)
+        public UnitController(ILogger<UnitController> logger, BalanceDbContext dbContext)
         {
             _dbContext = dbContext;
             _logger = logger;
