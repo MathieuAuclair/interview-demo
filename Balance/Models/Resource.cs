@@ -9,13 +9,13 @@ namespace Balance.Models
         public int Id { get; set; }
 
         [Column]
-        [MinLength(6)]
+        [MinLength(3)]
         [MaxLength(50)]
         [Display(Name = "наименование")]
         public string Name { get; set; }
 
         [Column]
-        public bool isArchived { get; set; }
+        public bool IsArchived { get; set; }
 
         public virtual IEnumerable<ResourceReciept> ResourceReciepts { get; set; }
         public virtual IEnumerable<ShipmentResource> ShipmentResources { get; set; }

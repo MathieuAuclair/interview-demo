@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function AddResourceInput() {
+export default function AddUnitInput() {
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
 
   const handleFailureNavigation = (trace) => {
-    navigate(`/dashboard/resource`, {
+    navigate(`/dashboard/unit`, {
       state: {
         message: {
-          message: "Не удалось добавить ресурс",
+          message: "Не удалось добавить единица",
           isError: true,
         },
       },
@@ -22,20 +22,20 @@ export default function AddResourceInput() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const resource = { name, isArchived: false };
+    const unit = { name, isArchived: false };
 
     try {
-      const response = await fetch("/resource", {
+      const response = await fetch("/unit", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(resource),
+        body: JSON.stringify(unit),
       });
 
       if (response.ok) {
-        navigate(`/dashboard/resource`, {
+        navigate(`/dashboard/unit`, {
           state: {
             message: {
-              message: "Новый ресурс успешно добавлен",
+              message: "Новый единица успешно добавлен",
               isError: false,
             },
           },
@@ -50,7 +50,7 @@ export default function AddResourceInput() {
 
   return (
     <div>
-      <h1>Добавить ресурсы</h1>
+      <h1>Добавить единиц</h1>
       <form onSubmit={handleSubmit}>
         <div class="form-floating mb-3">
           <input

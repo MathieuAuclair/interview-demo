@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export default function UpdateResourceInput() {
+export default function UpdateUnitInput() {
   const navigate = useNavigate();
 
   const { state } = useLocation();
-  const { resource } = state;
+  const { unit } = state;
 
-  const [name, setName] = useState(resource.name);
+  const [name, setName] = useState(unit.name);
 
   const handleFailureNavigation = () => {
-    navigate(`/dashboard/resource`, {
+    navigate(`/dashboard/unit`, {
       state: {
         message: {
-          message: "Не удалось обновить ресурс.",
+          message: "Не удалось обновить единица.",
           isError: true,
         },
       },
@@ -21,10 +21,10 @@ export default function UpdateResourceInput() {
   };
 
   const handleSubmit = async (isArchived) => {
-    const data = { id: resource.id, name, isArchived };
+    const data = { id: unit.id, name, isArchived };
 
     try {
-      const response = await fetch("/resource", {
+      const response = await fetch("/unit", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -32,10 +32,10 @@ export default function UpdateResourceInput() {
 
       if (response.ok) {
         console.log("OK");
-        navigate(`/dashboard/resource`, {
+        navigate(`/dashboard/unit`, {
           state: {
             message: {
-              message: "Ресурс успешно обновлен!",
+              message: "Единица успешно обновлен!",
               isError: false,
             },
           },
@@ -51,7 +51,7 @@ export default function UpdateResourceInput() {
 
   return (
     <div>
-      <h1>Обновление ресурсы</h1>
+      <h1>Обновление единиц</h1>
       <div class="form-floating mb-3">
         <input
           value={name}
@@ -66,18 +66,18 @@ export default function UpdateResourceInput() {
       </div>
       <div className="d-flex gap-2">
         <button
-          onClick={() => handleSubmit(resource.isArchived)}
+          onClick={() => handleSubmit(unit.isArchived)}
           class="btn btn-primary"
           type="submit"
         >
           Сохранить
         </button>
         <button
-          onClick={() => handleSubmit(!resource.isArchived)}
+          onClick={() => handleSubmit(!unit.isArchived)}
           class="btn btn-warning"
           type="submit"
         >
-          {resource.isArchived ? "Разархивировать" : "В архив"}
+          {unit.isArchived ? "Разархивировать" : "В архив"}
         </button>
       </div>
     </div>

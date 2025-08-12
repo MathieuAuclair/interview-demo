@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-export default function ResourcePage({ isArchived }) {
+export default function UnitPage({ isArchived }) {
   const { state } = useLocation();
 
   const [isLoading, setIsLoading] = useState(true);
-  const [resources, setResources] = useState([]);
+  const [units, setunits] = useState([]);
   const [alert, setAlert] = useState(state?.message);
 
   const navigate = useNavigate();
@@ -14,10 +14,10 @@ export default function ResourcePage({ isArchived }) {
     // Извлекать обновленные данные только после отправки ресурса
     setIsLoading(true);
 
-    fetch(isArchived ? "resource?isArchived=true" : "resource")
+    fetch(isArchived ? "unit?isArchived=true" : "unit")
       .then((response) => {
-        response.json().then((resources) => {
-          setResources(resources);
+        response.json().then((units) => {
+          setunits(units);
         });
       })
       .finally(() => {
@@ -25,35 +25,35 @@ export default function ResourcePage({ isArchived }) {
       });
   }, [isArchived]);
 
-  const handleDelete = async (e, resource) => {
+  const handleDelete = async (e, unit) => {
     e.preventDefault();
 
-    if (!window.confirm(`Вы уверены, что хотите удалить ${resource.name}?`)) {
+    if (!window.confirm(`Вы уверены, что хотите удалить ${unit.name}?`)) {
       return;
     }
 
     try {
-      const response = await fetch(`/resource?id=${resource.id}`, {
+      const response = await fetch(`/unit?id=${unit.id}`, {
         method: "DELETE",
       });
 
       if (!response.ok) {
         setAlert({
-          message: "Не удалось удалить или заархивировать ресурса",
+          message: "Не удалось удалить или заархивировать единица",
           isError: true,
         });
 
         return;
       }
 
-      setResources((prev) => prev.filter((r) => r.id !== resource.id));
+      setunits((prev) => prev.filter((r) => r.id !== unit.id));
 
       setAlert({
-        message: "Ресурс удален успешно",
+        message: "единица удален успешно",
         isError: false,
       });
     } catch (error) {
-      console.error("Ошибка при удалении ресурса:", error);
+      console.error("Ошибка при удалении единица:", error);
     }
   };
 
@@ -76,14 +76,14 @@ export default function ResourcePage({ isArchived }) {
         className="btn btn-secondary my-2"
         onClick={() => {
           navigate(
-            isArchived ? "/dashboard/resource" : "/dashboard/resource/archived"
+            isArchived ? "/dashboard/unit" : "/dashboard/unit/archived"
           );
         }}
       >
         {isArchived ? "просмотр активных" : "просмотреть архив"}
       </button>
-      {!resources || resources.length <= 0 ? (
-        <p>Нет ресурсов...</p>
+      {!units || units.length <= 0 ? (
+        <p>Нет единица...</p>
       ) : (
         <table className="table">
           <thead>
@@ -93,9 +93,9 @@ export default function ResourcePage({ isArchived }) {
             </th>
           </thead>
           <tbody>
-            {resources.map((resource) => {
+            {units.map((unit) => {
               return (
-                <tr key={resource.id}>
+                <tr key={unit.id}>
                   <td
                     className={
                       isArchived
@@ -103,15 +103,15 @@ export default function ResourcePage({ isArchived }) {
                         : ""
                     }
                   >
-                    {resource.name}
+                    {unit.name}
                   </td>
                   <td>
                     <button
                       type="button"
                       className="btn btn-link"
                       onClick={() => {
-                        navigate(`/dashboard/resource/update`, {
-                          state: { resource },
+                        navigate(`/dashboard/unit/update`, {
+                          state: { unit },
                         });
                       }}
                     >
@@ -122,7 +122,7 @@ export default function ResourcePage({ isArchived }) {
                     <button
                       type="button"
                       className="btn btn-link link-danger"
-                      onClick={(e) => handleDelete(e, resource)}
+                      onClick={(e) => handleDelete(e, unit)}
                     >
                       Удаление
                     </button>
@@ -136,10 +136,10 @@ export default function ResourcePage({ isArchived }) {
       <button
         className="btn btn-outline-primary"
         onClick={() => {
-          navigate(`/dashboard/resource/add`);
+          navigate(`/dashboard/unit/add`);
         }}
       >
-        Добавить новый ресурс
+        Добавить новый единица
       </button>
     </div>
   );

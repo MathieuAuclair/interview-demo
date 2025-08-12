@@ -6,27 +6,27 @@ namespace Balance.Controller
 {
     [ApiController]
     [Route("[controller]")]
-    public class ResourceController : ControllerBase
+    public class UnitController : ControllerBase
     {
         private readonly BalanceDbContext _dbContext;
         private readonly ILogger<ReceiptController> _logger;
 
-        public ResourceController(ILogger<ReceiptController> logger, BalanceDbContext dbContext)
+        public UnitController(ILogger<ReceiptController> logger, BalanceDbContext dbContext)
         {
             _dbContext = dbContext;
             _logger = logger;
         }
 
         [HttpGet]
-        public async Task<List<Resource>> Get(bool isArchived)
+        public async Task<List<Unit>> Get(bool isArchived)
         {
-            return await _dbContext.Resources
-                .Where(resource => resource.IsArchived == isArchived)
+            return await _dbContext.Units
+                .Where(unit => unit.IsArchived == isArchived)
                 .ToListAsync();
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put(Resource resource)
+        public async Task<IActionResult> Put(Unit unit)
         {
             if (!ModelState.IsValid)
             {
@@ -38,22 +38,22 @@ namespace Balance.Controller
                 return BadRequest(new { Errors = errors });
             }
 
-            var entity = await _dbContext.Resources
-                .FirstOrDefaultAsync(r => r.Name == resource.Name);
+            var entity = await _dbContext.Units
+                .FirstOrDefaultAsync(r => r.Name == unit.Name);
 
             if (entity != null)
             {
-                return BadRequest("Уже существует ресурс с таким же именем.");
+                return BadRequest("Уже существует единица с таким же именем.");
             }
 
-            await _dbContext.Resources.AddAsync(resource);
+            await _dbContext.Units.AddAsync(unit);
             await _dbContext.SaveChangesAsync();
 
             return Created();
         }
 
         [HttpPatch]
-        public async Task<IActionResult> Patch(Resource resource)
+        public async Task<IActionResult> Patch(Unit unit)
         {
             if (!ModelState.IsValid)
             {
@@ -65,20 +65,20 @@ namespace Balance.Controller
                 return BadRequest(new { Errors = errors });
             }
 
-            if (resource.Id == 0)
+            if (unit.Id == 0)
             {
                 BadRequest("Неверный идентификатор");
             }
 
-            var entity = await _dbContext.Resources
-                .FirstOrDefaultAsync(r => r.Id != resource.Id && r.Name == resource.Name);
+            var entity = await _dbContext.Units
+                .FirstOrDefaultAsync(r => r.Id != unit.Id && r.Name == unit.Name);
 
             if (entity != null)
             {
-                return BadRequest("Уже существует ресурс с таким же именем.");
+                return BadRequest("Уже существует единица с таким же именем.");
             }
 
-            _dbContext.Resources.Update(resource);
+            _dbContext.Units.Update(unit);
             await _dbContext.SaveChangesAsync();
 
             return Created();
@@ -87,7 +87,7 @@ namespace Balance.Controller
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            var entity = await _dbContext.Resources
+            var entity = await _dbContext.Units
                 .FirstOrDefaultAsync(entity => entity.Id == id);
 
             if (entity == null)
@@ -97,7 +97,7 @@ namespace Balance.Controller
 
             try
             {
-                _dbContext.Resources.Remove(entity);
+                _dbContext.Units.Remove(entity);
                 await _dbContext.SaveChangesAsync();
 
                 return Ok("удалено");
@@ -106,7 +106,7 @@ namespace Balance.Controller
             {
                 entity.IsArchived = true;
 
-                _dbContext.Resources.Update(entity);
+                _dbContext.Units.Update(entity);
                 await _dbContext.SaveChangesAsync();
 
                 return Ok("архивированный");

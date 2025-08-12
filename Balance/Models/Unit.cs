@@ -9,6 +9,8 @@ namespace Balance.Models
         public int Id { get; set; }
 
         [Column]
+        [MinLength(3)]
+        [MaxLength(50)]
         [Display(Name = "единицы измерения")]
         public string Name { get; set; }
 

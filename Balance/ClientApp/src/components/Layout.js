@@ -28,7 +28,7 @@ export class Layout extends Component {
               <a className="btn btn-outline-light" href="#">
                 Клиенты
               </a>
-              <a className="btn btn-outline-light" href="#">
+              <a className="btn btn-outline-light" href="/dashboard/unit">
                 Единицы измерения
               </a>
               <a className="btn btn-outline-light" href="/dashboard/resource">
