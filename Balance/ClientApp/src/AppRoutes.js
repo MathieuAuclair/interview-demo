@@ -7,8 +7,10 @@ import AddUnitInput from "./components/units/AddUnitInput";
 import CustomerPage from "./components/customer/CustomerPage";
 import UpdateCustomerInput from "./components/customer/UpdateCustomerInput";
 import AddCustomerInput from "./components/customer/AddCustomerInput";
-import ShipmentPage from "./components/shipments/ShipmentPage";
-import UpdateShipmentInput from "./components/shipments/UpdateShipmentInput";
+import ShipmentPage from "./components/shipment/ShipmentPage";
+import UpdateShipmentInput from "./components/shipment/UpdateShipmentInput";
+import ReceiptPage from "./components/receipt/ReceiptPage";
+import UpdateReceiptInput from "./components/receipt/UpdateReceiptInput";
 
 const AppRoutes = [
   // Resources
@@ -78,6 +80,23 @@ const AppRoutes = [
   {
     path: "/dashboard/shipment/add",
     element: <UpdateShipmentInput />,
+  },
+  // Receipt
+  {
+    path: "/dashboard/receipt",
+    element: <ReceiptPage isArchived={false} />,
+  },
+  {
+    path: "/dashboard/receipt/archived",
+    element: <ReceiptPage isArchived={true} />,
+  },
+  {
+    path: "/dashboard/receipt/update",
+    element: <UpdateReceiptInput />,
+  },
+  {
+    path: "/dashboard/receipt/add",
+    element: <UpdateReceiptInput />,
   },
 ];
 

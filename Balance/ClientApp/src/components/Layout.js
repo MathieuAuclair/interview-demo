@@ -16,7 +16,7 @@ export class Layout extends Component {
               <a className="btn btn-outline-light" href="/">
                 Баланс
               </a>
-              <a className="btn btn-outline-light" href="/">
+              <a className="btn btn-outline-light" href="/dashboard/receipt">
                 Поступления
               </a>
               <a className="btn btn-outline-light" href="/dashboard/shipment">

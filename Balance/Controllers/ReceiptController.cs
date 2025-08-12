@@ -20,11 +20,27 @@ namespace Balance.Controller
         [HttpGet]
         public async Task<List<Receipt>> Get()
         {
-            return await _dbContext.Receipts.ToListAsync();
+            return await _dbContext.Receipts
+                .Select(r => new Receipt
+                {
+                    Id = r.Id,
+                    Date = r.Date,
+                    PurchaseOrder = r.PurchaseOrder,
+                    ReceiptResources = r.ReceiptResources.Select(rr => new ReceiptResource
+                    {
+                        Id = rr.Id,
+                        Quantity = rr.Quantity,
+                        Resource = rr.Resource,
+                        ResourceId = rr.ResourceId,
+                        Unit = rr.Unit,
+                        UnitId = rr.UnitId
+                    })
+                })
+                .ToListAsync();
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Put(Receipt receipt)
+        [HttpPatch]
+        public async Task<IActionResult> Patch(Receipt receipt)
         {
             if (!ModelState.IsValid)
             {
@@ -36,9 +52,28 @@ namespace Balance.Controller
                 return BadRequest(new { Errors = errors });
             }
 
-            // TODO: Implement validation
+            if (receipt.Id == 0)
+            {
+                BadRequest("Неверный идентификатор");
+            }
 
-            await _dbContext.Receipts.AddAsync(receipt);
+            var entity = await _dbContext.Receipts
+                .FirstOrDefaultAsync(s => s.Id != receipt.Id && s.PurchaseOrder == receipt.PurchaseOrder);
+
+            if (entity != null)
+            {
+                return BadRequest("Уже существует отгрузка с таким же именем.");
+            }
+
+            var recieptResourcesToDelete = _dbContext.ReceiptResources
+                .Where(sr => sr.ReceiptId == receipt.Id)
+                .AsNoTracking()
+                .ToList()
+                .Where(sr => !receipt.ReceiptResources.Any(s => s.Id == sr.Id));
+
+            _dbContext.ReceiptResources.RemoveRange(recieptResourcesToDelete);
+            _dbContext.Receipts.Update(receipt);
+
             await _dbContext.SaveChangesAsync();
 
             return Created();

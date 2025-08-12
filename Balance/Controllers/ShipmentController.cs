@@ -1,5 +1,4 @@
 using Balance.Models;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,33 +44,6 @@ namespace Balance.Controller
                 })
                 .AsNoTracking()
                 .ToListAsync();
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> Put(Shipment shipment)
-        {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
-
-                return BadRequest(new { Errors = errors });
-            }
-
-            var entity = await _dbContext.Shipments
-                .FirstOrDefaultAsync(s => s.PurchaseOrder == shipment.PurchaseOrder);
-
-            if (entity != null)
-            {
-                return BadRequest("Уже существует отгрузка с таким же именем.");
-            }
-
-            await _dbContext.Shipments.AddAsync(shipment);
-            await _dbContext.SaveChangesAsync();
-
-            return Created();
         }
 
         [HttpPatch]

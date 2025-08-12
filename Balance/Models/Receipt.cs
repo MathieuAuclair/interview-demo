@@ -18,6 +18,6 @@ namespace Balance.Models
         [Display(Name = "дата")]
         public DateTime Date { get; set; }
 
-        public virtual IEnumerable<ResourceReciept> ResourceReciepts { get; set; }
+        public virtual IEnumerable<ReceiptResource> ReceiptResources { get; set; }
     }
 }

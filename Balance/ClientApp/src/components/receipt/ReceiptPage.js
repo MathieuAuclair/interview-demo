@@ -1,25 +1,24 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-export default function ShipmentPage({ isArchived }) {
+export default function ReceiptPage({ isArchived }) {
   const { state } = useLocation();
 
   const [isLoading, setIsLoading] = useState(true);
-  const [shipments, setshipments] = useState([]);
+  const [receipts, setreceipts] = useState([]);
   const [alert, setAlert] = useState(state?.message);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Извлекать обновленные данные только после отправки отгрузка
     setIsLoading(true);
 
-    fetch(isArchived ? "shipment?isArchived=true" : "shipment")
+    fetch(isArchived ? "receipt?isArchived=true" : "receipt")
       .then((response) => {
-        response.json().then((shipments) => {
-          console.log(shipments);
+        response.json().then((receipts) => {
+          console.log(receipts);
 
-          setshipments(shipments);
+          setreceipts(receipts);
         });
       })
       .finally(() => {
@@ -31,15 +30,15 @@ export default function ShipmentPage({ isArchived }) {
     return isArchived ? "text-muted text-decoration-line-through" : "";
   }, [isArchived]);
 
-  const handleDelete = async (e, shipment) => {
+  const handleDelete = async (e, receipt) => {
     e.preventDefault();
 
-    if (!window.confirm(`Вы уверены, что хотите удалить ${shipment.name}?`)) {
+    if (!window.confirm(`Вы уверены, что хотите удалить ${receipt.name}?`)) {
       return;
     }
 
     try {
-      const response = await fetch(`/shipment?id=${shipment.id}`, {
+      const response = await fetch(`/receipt?id=${receipt.id}`, {
         method: "DELETE",
       });
 
@@ -52,7 +51,7 @@ export default function ShipmentPage({ isArchived }) {
         return;
       }
 
-      setshipments((prev) => prev.filter((r) => r.id !== shipment.id));
+      setreceipts((prev) => prev.filter((r) => r.id !== receipt.id));
 
       setAlert({
         message: "отгрузка удален успешно",
@@ -82,13 +81,13 @@ export default function ShipmentPage({ isArchived }) {
         className="btn btn-secondary my-2"
         onClick={() => {
           navigate(
-            isArchived ? "/dashboard/shipment" : "/dashboard/shipment/archived"
+            isArchived ? "/dashboard/receipt" : "/dashboard/receipt/archived"
           );
         }}
       >
         {isArchived ? "просмотр активных" : "просмотреть архив"}
       </button>
-      {!shipments || shipments.length <= 0 ? (
+      {!receipts || receipts.length <= 0 ? (
         <p>Нет отгрузка...</p>
       ) : (
         <table className="table">
@@ -96,38 +95,24 @@ export default function ShipmentPage({ isArchived }) {
             <tr>
               <th>Номер заказа</th>
               <th>Дата</th>
-              <th>Клиент</th>
-              <th>Статус</th>
               <th>Ресурс</th>
               <th>Обновление</th>
               <th>Удаление</th>
             </tr>
           </thead>
           <tbody>
-            {shipments.map((shipment) => {
+            {receipts.map((receipt) => {
               return (
-                <tr key={shipment.id}>
+                <tr key={receipt.id}>
                   <td className={isArchivedStyling}>
-                    {shipment.purchaseOrder}
+                    {receipt.purchaseOrder}
                   </td>
                   <td className={isArchivedStyling}>
-                    {shipment?.date?.split("T")?.[0]}
-                  </td>
-                  <td className={isArchivedStyling}>
-                    {shipment?.customer?.name}
-                  </td>
-                  <td className={isArchivedStyling}>
-                    <div
-                      className={`badge rounded-pill text-bg-${
-                        shipment.isSigned ? "success" : "secondary"
-                      }`}
-                    >
-                      {shipment?.isSigned ? "Signed" : "Shipping"}
-                    </div>
+                    {receipt?.date?.split("T")?.[0]}
                   </td>
                   <td>
                     <ul>
-                      {(shipment?.shipmentResources ?? []).map((sr) => {
+                      {(receipt?.receiptResources ?? []).map((sr) => {
                         return (
                           <li>
                             {sr?.quantity} {sr?.unit?.name} -{" "}
@@ -142,8 +127,8 @@ export default function ShipmentPage({ isArchived }) {
                       type="button"
                       className="btn btn-link"
                       onClick={() => {
-                        navigate(`/dashboard/shipment/update`, {
-                          state: { shipment },
+                        navigate(`/dashboard/receipt/update`, {
+                          state: { receipt },
                         });
                       }}
                     >
@@ -154,7 +139,7 @@ export default function ShipmentPage({ isArchived }) {
                     <button
                       type="button"
                       className="btn btn-link link-danger"
-                      onClick={(e) => handleDelete(e, shipment)}
+                      onClick={(e) => handleDelete(e, receipt)}
                     >
                       Удаление
                     </button>
@@ -168,7 +153,7 @@ export default function ShipmentPage({ isArchived }) {
       <button
         className="btn btn-outline-primary"
         onClick={() => {
-          navigate(`/dashboard/shipment/add`);
+          navigate(`/dashboard/receipt/add`);
         }}
       >
         Добавить новый отгрузка

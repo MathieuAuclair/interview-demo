@@ -12,7 +12,7 @@ namespace Balance.Models
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Receipt> Receipts { get; set; }
         public DbSet<Resource> Resources { get; set; }
-        public DbSet<ResourceReciept> ResourceReciepts { get; set; }
+        public DbSet<ReceiptResource> ReceiptResources { get; set; }
         public DbSet<Shipment> Shipments { get; set; }
         public DbSet<ShipmentResource> ShipmentResources { get; set; }
         public DbSet<Unit> Units { get; set; }

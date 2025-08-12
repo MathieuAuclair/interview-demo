@@ -11,7 +11,6 @@ export default function CustomerPage({ isArchived }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Извлекать обновленные данные только после отправки клиент
     setIsLoading(true);
 
     fetch(isArchived ? "customer?isArchived=true" : "customer")

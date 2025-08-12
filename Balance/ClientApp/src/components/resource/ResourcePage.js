@@ -11,7 +11,6 @@ export default function ResourcePage({ isArchived }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Извлекать обновленные данные только после отправки ресурса
     setIsLoading(true);
 
     fetch(isArchived ? "resource?isArchived=true" : "resource")
