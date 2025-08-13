@@ -27,33 +27,51 @@ export default function UnitPage({ isArchived }) {
   const handleDelete = async (e, unit) => {
     e.preventDefault();
 
-    if (!window.confirm(`Вы уверены, что хотите удалить ${unit.name}?`)) {
+    if (
+      !window.confirm(
+        `Вы уверены, что хотите ${isArchived ? "разархивировать" : "удалить"} ${
+          unit.name
+        }?`
+      )
+    ) {
       return;
     }
 
-    try {
-      const response = await fetch(`/unit?id=${unit.id}`, {
+    let response;
+
+    if (isArchived) {
+      unit.isArchived = !unit.isArchived;
+
+      response = await fetch("/unit", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(unit),
+      });
+    } else {
+      response = await fetch(`/unit?id=${unit.id}`, {
         method: "DELETE",
       });
-
-      if (!response.ok) {
-        setAlert({
-          message: "Не удалось удалить или заархивировать единица",
-          isError: true,
-        });
-
-        return;
-      }
-
-      setUnits((prev) => prev.filter((r) => r.id !== unit.id));
-
-      setAlert({
-        message: "Единица измерения успешно удалена",
-        isError: false,
-      });
-    } catch (error) {
-      console.error("Ошибка при удалении единица:", error);
     }
+
+    if (!response.ok) {
+      setAlert({
+        message: isArchived
+          ? "Не удалось получить из архива"
+          : "Не удалось удалить или заархивировать единицаю",
+        isError: true,
+      });
+
+      return;
+    }
+
+    setUnits((prev) => prev.filter((r) => r.id !== unit.id));
+
+    setAlert({
+      message: isArchived
+        ? "Успешно извлечено из архива"
+        : "Единица измерения успешно удалена!",
+      isError: false,
+    });
   };
 
   if (isLoading) {
@@ -87,7 +105,7 @@ export default function UnitPage({ isArchived }) {
             <tr>
               <th>Название</th>
               <th>Обновление</th>
-              <th>Удаление</th>
+              <th>{isArchived ? "Разархивирование" : "Удаление"}</th>
             </tr>
           </thead>
           <tbody>
@@ -107,6 +125,7 @@ export default function UnitPage({ isArchived }) {
                     <button
                       type="button"
                       className="btn btn-link"
+                      disabled={isArchived ? "disabled" : null}
                       onClick={() => {
                         navigate(`/dashboard/unit/update`, {
                           state: { unit },
@@ -119,10 +138,12 @@ export default function UnitPage({ isArchived }) {
                   <td>
                     <button
                       type="button"
-                      className="btn btn-link link-danger"
+                      className={`btn btn-link ${
+                        isArchived ? "link-warning" : "link-danger"
+                      }`}
                       onClick={(e) => handleDelete(e, unit)}
                     >
-                      Удалить
+                      {isArchived ? "Разархивировать" : "Удалить"}
                     </button>
                   </td>
                 </tr>

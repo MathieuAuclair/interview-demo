@@ -27,33 +27,50 @@ export default function ResourcePage({ isArchived }) {
   const handleDelete = async (e, resource) => {
     e.preventDefault();
 
-    if (!window.confirm(`Вы уверены, что хотите удалить ${resource.name}?`)) {
+    if (
+      !window.confirm(
+        `Вы уверены, что хотите ${isArchived ? "разархивировать" : "удалить"} ${
+          resource.name
+        }?`
+      )
+    ) {
+      return;
+    }
+    let response;
+
+    if (isArchived) {
+      resource.isArchived = !resource.isArchived;
+
+      response = await fetch("/resource", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(resource),
+      });
+    } else {
+      response = await fetch(`/resource?id=${resource.id}`, {
+        method: "DELETE",
+      });
+    }
+
+    if (!response.ok) {
+      setAlert({
+        message: isArchived
+          ? "Не удалось получить из архива"
+          : "Не удалось удалить или заархивировать ресурса",
+        isError: true,
+      });
+
       return;
     }
 
-    try {
-      const response = await fetch(`/resource?id=${resource.id}`, {
-        method: "DELETE",
-      });
+    setResources((prev) => prev.filter((r) => r.id !== resource.id));
 
-      if (!response.ok) {
-        setAlert({
-          message: "Не удалось удалить или заархивировать ресурса",
-          isError: true,
-        });
-
-        return;
-      }
-
-      setResources((prev) => prev.filter((r) => r.id !== resource.id));
-
-      setAlert({
-        message: "Ресурс удален успешно",
-        isError: false,
-      });
-    } catch (error) {
-      console.error("Ошибка при удалении ресурса:", error);
-    }
+    setAlert({
+      message: isArchived
+        ? "Успешно извлечено из архива"
+        : "Ресурс удален успешно",
+      isError: false,
+    });
   };
 
   if (isLoading) {
@@ -89,7 +106,7 @@ export default function ResourcePage({ isArchived }) {
             <tr>
               <th>Название</th>
               <th>Обновление</th>
-              <th>Удаление</th>
+              <th>{isArchived ? "Разархивирование" : "Удаление"}</th>
             </tr>
           </thead>
           <tbody>
@@ -109,6 +126,7 @@ export default function ResourcePage({ isArchived }) {
                     <button
                       type="button"
                       className="btn btn-link"
+                      disabled={isArchived ? "disabled" : null}
                       onClick={() => {
                         navigate(`/dashboard/resource/update`, {
                           state: { resource },
@@ -121,10 +139,12 @@ export default function ResourcePage({ isArchived }) {
                   <td>
                     <button
                       type="button"
-                      className="btn btn-link link-danger"
+                      className={`btn btn-link ${
+                        isArchived ? "link-warning" : "link-danger"
+                      }`}
                       onClick={(e) => handleDelete(e, resource)}
                     >
-                      Удалить
+                      {isArchived ? "Разархивировать" : "Удалить"}
                     </button>
                   </td>
                 </tr>

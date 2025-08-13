@@ -31,7 +31,13 @@ export default function ShipmentPage({ isArchived }) {
   const handleDelete = async (e, shipment) => {
     e.preventDefault();
 
-    if (!window.confirm(`Вы уверены, что хотите удалить ${shipment.purchaseOrder}?`)) {
+    if (
+      !window.confirm(
+        `Вы уверены, что хотите ${isArchived ? "разархивировать" : "удалить"} ${
+          shipment.purchaseOrder
+        }?`
+      )
+    ) {
       return;
     }
 
@@ -97,7 +103,7 @@ export default function ShipmentPage({ isArchived }) {
               <th>Статус</th>
               <th>Ресурсы</th>
               <th>Обновление</th>
-              <th>Удаление</th>
+              <th>{isArchived ? "Разархивирование" : "Удаление"}</th>
             </tr>
           </thead>
           <tbody>
@@ -138,6 +144,7 @@ export default function ShipmentPage({ isArchived }) {
                     <button
                       type="button"
                       className="btn btn-link"
+                      disabled={isArchived ? "disabled" : null}
                       onClick={() => {
                         navigate(`/dashboard/shipment/update`, {
                           state: { shipment },
@@ -150,10 +157,12 @@ export default function ShipmentPage({ isArchived }) {
                   <td>
                     <button
                       type="button"
-                      className="btn btn-link link-danger"
+                      className={`btn btn-link ${
+                        isArchived ? "link-warning" : "link-danger"
+                      }`}
                       onClick={(e) => handleDelete(e, shipment)}
                     >
-                      Удалить
+                      {isArchived ? "Разархивировать" : "Удалить"}
                     </button>
                   </td>
                 </tr>

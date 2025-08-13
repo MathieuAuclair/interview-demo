@@ -31,33 +31,50 @@ export default function CustomerPage({ isArchived }) {
   const handleDelete = async (e, customer) => {
     e.preventDefault();
 
-    if (!window.confirm(`Вы уверены, что хотите удалить ${customer.name}?`)) {
+    if (
+      !window.confirm(
+        `Вы уверены, что хотите ${isArchived ? "разархивировать" : "удалить"} ${
+          customer.name
+        }?`
+      )
+    ) {
       return;
     }
 
-    try {
-      const response = await fetch(`/customer?id=${customer.id}`, {
+    let response;
+    if (isArchived) {
+      customer.isArchived = !customer.isArchived;
+
+      response = await fetch("/customer", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(customer),
+      });
+    } else {
+      response = await fetch(`/customer?id=${customer.id}`, {
         method: "DELETE",
       });
-
-      if (!response.ok) {
-        setAlert({
-          message: "Не удалось удалить или заархивировать клиент",
-          isError: true,
-        });
-
-        return;
-      }
-
-      setCustomers((prev) => prev.filter((r) => r.id !== customer.id));
-
-      setAlert({
-        message: "Клиент удален успешно",
-        isError: false,
-      });
-    } catch (error) {
-      console.error("Ошибка при удалении клиент:", error);
     }
+
+    if (!response.ok) {
+      setAlert({
+        message: isArchived
+          ? "Не удалось получить из архива"
+          : "Не удалось удалить или заархивировать клиент",
+        isError: true,
+      });
+
+      return;
+    }
+
+    setCustomers((prev) => prev.filter((r) => r.id !== customer.id));
+
+    setAlert({
+      message: isArchived
+        ? "Успешно извлечено из архива"
+        : "Клиент удален успешно",
+      isError: false,
+    });
   };
 
   if (isLoading) {
@@ -94,7 +111,7 @@ export default function CustomerPage({ isArchived }) {
               <th>Имя</th>
               <th>Адрес</th>
               <th>Обновление</th>
-              <th>Удаление</th>
+              <th>{isArchived ? "Разархивирование" : "Удаление"}</th>
             </tr>
           </thead>
           <tbody>
@@ -107,6 +124,7 @@ export default function CustomerPage({ isArchived }) {
                     <button
                       type="button"
                       className="btn btn-link"
+                      disabled={isArchived ? "disabled" : null}
                       onClick={() => {
                         navigate(`/dashboard/customer/update`, {
                           state: { customer },
@@ -119,10 +137,12 @@ export default function CustomerPage({ isArchived }) {
                   <td>
                     <button
                       type="button"
-                      className="btn btn-link link-danger"
+                      className={`btn btn-link ${
+                        isArchived ? "link-warning" : "link-danger"
+                      }`}
                       onClick={(e) => handleDelete(e, customer)}
                     >
-                      Удалить
+                      {isArchived ? "Разархивировать" : "Удалить"}
                     </button>
                   </td>
                 </tr>

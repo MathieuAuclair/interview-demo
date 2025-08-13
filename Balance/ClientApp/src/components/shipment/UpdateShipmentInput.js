@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export default function UpdateShipmentInput() {
+export default function UpdateShipmentInput({ isArchived }) {
   const navigate = useNavigate();
 
   const { state } = useLocation();
@@ -46,6 +46,10 @@ export default function UpdateShipmentInput() {
       setCustomerId(customers?.[0]?.id);
     }
   }, [customers, customerId]);
+
+  const isValidSubmission = useMemo(() => {
+    return shipmentResources.filter((sr) => sr.quantity > 0).length > 0;
+  }, [shipmentResources]);
 
   const handleFailureNavigation = () => {
     navigate(`/dashboard/shipment`, {
@@ -297,9 +301,9 @@ export default function UpdateShipmentInput() {
                   <button
                     type="button"
                     onClick={() => handleRemoveResource(sr.id ?? sr.index)}
-                    className="btn btn-outline-warning"
-                  >
-                    удалить
+                    className={`btn btn-link ${isArchived ? "link-warning" : "link-danger"}`}
+                    >
+                    {isArchived ? "Разархивировать" : "Удалить"}
                   </button>
                 </div>
                 <hr />
@@ -324,9 +328,19 @@ export default function UpdateShipmentInput() {
             Добавить новый ресурс
           </button>
         </div>
-        <button className="btn btn-primary" type="submit">
+        <button
+          className="btn btn-primary"
+          type="submit"
+          aria-disabled={
+            isValidSubmission ? null : "Отгрузка не может быть пустой!"
+          }
+          disabled={isValidSubmission ? false : "disabled"}
+        >
           Сохранить
         </button>
+        <i className="text-muted text-center">
+          {isValidSubmission ? null : "Отгрузка не может быть пустой!"}
+        </i>
       </form>
     </div>
   );

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export default function UpdateReceiptInput() {
+export default function UpdateReceiptInput({ isArchived }) {
   const navigate = useNavigate();
 
   const { state } = useLocation();
@@ -31,6 +31,10 @@ export default function UpdateReceiptInput() {
       });
     });
   }, []);
+
+  const isValidSubmission = useMemo(() => {
+    return receiptResources.filter((sr) => sr.quantity > 0).length > 0;
+  }, [receiptResources]);
 
   const handleFailureNavigation = () => {
     navigate(`/dashboard/receipt`, {
@@ -243,9 +247,11 @@ export default function UpdateReceiptInput() {
                   <button
                     type="button"
                     onClick={() => handleRemoveResource(sr.id ?? sr.index)}
-                    className="btn btn-outline-warning"
+                    className={`btn btn-link ${
+                      isArchived ? "link-warning" : "link-danger"
+                    }`}
                   >
-                    удалить
+                    {isArchived ? "Разархивировать" : "Удалить"}
                   </button>
                 </div>
                 <hr />
@@ -270,9 +276,19 @@ export default function UpdateReceiptInput() {
             Добавить новый ресурс
           </button>
         </div>
-        <button className="btn btn-primary" type="submit">
+        <button
+          className="btn btn-primary"
+          type="submit"
+          aria-disabled={
+            isValidSubmission ? null : "Поступления не может быть пустой!"
+          }
+          disabled={isValidSubmission ? false : "disabled"}
+        >
           Сохранить
         </button>
+        <i className="text-muted text-center">
+          {isValidSubmission ? null : "Поступления не может быть пустой!"}
+        </i>
       </form>
     </div>
   );
