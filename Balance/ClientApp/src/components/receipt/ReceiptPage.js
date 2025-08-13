@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-export default function ReceiptPage({ isArchived }) {
+export default function ReceiptPage() {
   const { state } = useLocation();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -13,7 +13,7 @@ export default function ReceiptPage({ isArchived }) {
   useEffect(() => {
     setIsLoading(true);
 
-    fetch(isArchived ? "receipt?isArchived=true" : "receipt")
+    fetch("receipt")
       .then((response) => {
         response.json().then((receipts) => {
           console.log(receipts);
@@ -24,20 +24,14 @@ export default function ReceiptPage({ isArchived }) {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [isArchived]);
-
-  const isArchivedStyling = useMemo(() => {
-    return isArchived ? "text-muted text-decoration-line-through" : "";
-  }, [isArchived]);
+  }, []);
 
   const handleDelete = async (e, receipt) => {
     e.preventDefault();
 
     if (
       !window.confirm(
-        `Вы уверены, что хотите ${isArchived ? "разархивировать" : "удалить"} ${
-          receipt.purchaseOrder
-        }?`
+        `Вы уверены, что хотите удалить ${receipt.purchaseOrder}?`
       )
     ) {
       return;
@@ -83,16 +77,6 @@ export default function ReceiptPage({ isArchived }) {
           {alert.message}
         </div>
       )}
-      <button
-        className="btn btn-secondary my-2"
-        onClick={() => {
-          navigate(
-            isArchived ? "/dashboard/receipt" : "/dashboard/receipt/archived"
-          );
-        }}
-      >
-        {isArchived ? "Просмотр активных" : "Просмотреть архив"}
-      </button>
       {!receipts || receipts.length <= 0 ? (
         <p>Нет отгрузка...</p>
       ) : (
@@ -103,17 +87,15 @@ export default function ReceiptPage({ isArchived }) {
               <th>Дата</th>
               <th>Ресурсы</th>
               <th>Обновление</th>
-              <th>{isArchived ? "Разархивирование" : "Удаление"}</th>
+              <th>Удаление</th>
             </tr>
           </thead>
           <tbody>
             {receipts.map((receipt) => {
               return (
                 <tr key={receipt.id}>
-                  <td className={isArchivedStyling}>{receipt.purchaseOrder}</td>
-                  <td className={isArchivedStyling}>
-                    {receipt?.date?.split("T")?.[0]}
-                  </td>
+                  <td>{receipt.purchaseOrder}</td>
+                  <td>{receipt?.date?.split("T")?.[0]}</td>
                   <td>
                     <ul>
                       {(receipt?.receiptResources ?? []).map((sr) => {
@@ -130,7 +112,6 @@ export default function ReceiptPage({ isArchived }) {
                     <button
                       type="button"
                       className="btn btn-link"
-                      disabled={isArchived ? "disabled" : null}
                       onClick={() => {
                         navigate(`/dashboard/receipt/update`, {
                           state: { receipt },
@@ -143,12 +124,10 @@ export default function ReceiptPage({ isArchived }) {
                   <td>
                     <button
                       type="button"
-                      className={`btn btn-link ${
-                        isArchived ? "link-warning" : "link-danger"
-                      }`}
+                      className="btn btn-link link-danger"
                       onClick={(e) => handleDelete(e, receipt)}
                     >
-                      {isArchived ? "Разархивировать" : "Удалить"}
+                      Удалить
                     </button>
                   </td>
                 </tr>

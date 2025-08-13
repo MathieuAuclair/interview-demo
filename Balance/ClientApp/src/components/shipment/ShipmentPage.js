@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-export default function ShipmentPage({ isArchived }) {
+export default function ShipmentPage() {
   const { state } = useLocation();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -13,7 +13,7 @@ export default function ShipmentPage({ isArchived }) {
   useEffect(() => {
     setIsLoading(true);
 
-    fetch(isArchived ? "shipment?isArchived=true" : "shipment")
+    fetch("shipment")
       .then((response) => {
         response.json().then((shipments) => {
           setshipments(shipments);
@@ -22,20 +22,14 @@ export default function ShipmentPage({ isArchived }) {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [isArchived]);
-
-  const isArchivedStyling = useMemo(() => {
-    return isArchived ? "text-muted text-decoration-line-through" : "";
-  }, [isArchived]);
+  }, []);
 
   const handleDelete = async (e, shipment) => {
     e.preventDefault();
 
     if (
       !window.confirm(
-        `Вы уверены, что хотите ${isArchived ? "разархивировать" : "удалить"} ${
-          shipment.purchaseOrder
-        }?`
+        `Вы уверены, что хотите "удалить ${shipment.purchaseOrder}?`
       )
     ) {
       return;
@@ -81,16 +75,6 @@ export default function ShipmentPage({ isArchived }) {
           {alert.message}
         </div>
       )}
-      <button
-        className="btn btn-secondary my-2"
-        onClick={() => {
-          navigate(
-            isArchived ? "/dashboard/shipment" : "/dashboard/shipment/archived"
-          );
-        }}
-      >
-        {isArchived ? "Просмотр активных" : "Просмотреть архив"}
-      </button>
       {!shipments || shipments.length <= 0 ? (
         <p>Нет отгрузка...</p>
       ) : (
@@ -103,23 +87,17 @@ export default function ShipmentPage({ isArchived }) {
               <th>Статус</th>
               <th>Ресурсы</th>
               <th>Обновление</th>
-              <th>{isArchived ? "Разархивирование" : "Удаление"}</th>
+              <th>Удаление</th>
             </tr>
           </thead>
           <tbody>
             {shipments.map((shipment) => {
               return (
                 <tr key={shipment.id}>
-                  <td className={isArchivedStyling}>
-                    {shipment.purchaseOrder}
-                  </td>
-                  <td className={isArchivedStyling}>
-                    {shipment?.date?.split("T")?.[0]}
-                  </td>
-                  <td className={isArchivedStyling}>
-                    {shipment?.customer?.name}
-                  </td>
-                  <td className={isArchivedStyling}>
+                  <td>{shipment.purchaseOrder}</td>
+                  <td>{shipment?.date?.split("T")?.[0]}</td>
+                  <td>{shipment?.customer?.name}</td>
+                  <td>
                     <div
                       className={`badge rounded-pill text-bg-${
                         shipment.isSigned ? "success" : "secondary"
@@ -144,7 +122,6 @@ export default function ShipmentPage({ isArchived }) {
                     <button
                       type="button"
                       className="btn btn-link"
-                      disabled={isArchived ? "disabled" : null}
                       onClick={() => {
                         navigate(`/dashboard/shipment/update`, {
                           state: { shipment },
@@ -157,12 +134,10 @@ export default function ShipmentPage({ isArchived }) {
                   <td>
                     <button
                       type="button"
-                      className={`btn btn-link ${
-                        isArchived ? "link-warning" : "link-danger"
-                      }`}
+                      className="btn btn-link link-danger"
                       onClick={(e) => handleDelete(e, shipment)}
                     >
-                      {isArchived ? "Разархивировать" : "Удалить"}
+                      Удалить
                     </button>
                   </td>
                 </tr>
