@@ -35,6 +35,10 @@ jobs:
           node-version: 18.15.0
       - name: Build
         run: dotnet build Balance/WebApp.csproj
+      - name: Install EF Core CLI
+        run: |
+          dotnet tool install --global dotnet-ef --version 8.0.19
+          export PATH="$PATH:$HOME/.dotnet/tools"
       - name: Migrations
         run: dotnet ef database update --project Balance/WebApp.csproj
       - name: Test
