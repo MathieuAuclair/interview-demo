@@ -7,17 +7,19 @@ on:
     branches: [ master ]
 
 jobs:
-  build_and_run_tests:
-    runs-on: ubuntu-latest
-    container: mcr.microsoft.com/dotnet/sdk:8.0
-    services:
-      mssql:
-        image: mcr.microsoft.com/mssql/server:2022-latest
-        env:
-          ACCEPT_EULA: Y
-          MSSQL_SA_PASSWORD: "StrongPassw0rd!"
-        ports:
-          - 1433:1433
+  services:
+    mssql:
+      image: mcr.microsoft.com/mssql/server:2022-latest
+      ports:
+        - 1433:1433
+      env:
+        ACCEPT_EULA: Y
+        SA_PASSWORD: "StrongPassw0rd\!"
+      options: >-
+        --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'StrongPassw0rd!' -Q 'SELECT 1'" 
+        --health-interval=10s 
+        --health-timeout=5s 
+        --health-retries=5
     steps:
       - uses: actions/checkout@v4
       - name: Install Node.js
@@ -26,5 +28,7 @@ jobs:
           node-version: 18.15.0
       - name: Build
         run: dotnet build Balance/WebApp.csproj
+      - name: Run migrations
+        run: dotnet ef database update
       - name: Test
         run: dotnet test Balance.Tests/Balance.Tests.csproj
