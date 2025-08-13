@@ -18,10 +18,10 @@ namespace Balance.Controller
         }
 
         [HttpGet]
-        public async Task<List<Unit>> Get(bool isArchived)
+        public async Task<List<Unit>> Get(bool isArchived, bool ignoreArchiveFlag)
         {
             return await _dbContext.Units
-                .Where(unit => unit.IsArchived == isArchived)
+                .Where(unit => unit.IsArchived == isArchived || ignoreArchiveFlag)
                 .ToListAsync();
         }
 

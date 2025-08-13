@@ -79,7 +79,7 @@ export default function ResourcePage({ isArchived }) {
           );
         }}
       >
-        {isArchived ? "просмотр активных" : "просмотреть архив"}
+        {isArchived ? "Просмотр активных" : "Просмотреть архив"}
       </button>
       {!resources || resources.length <= 0 ? (
         <p>Нет ресурсов...</p>
@@ -115,7 +115,7 @@ export default function ResourcePage({ isArchived }) {
                         });
                       }}
                     >
-                      Обновление
+                      Обновить
                     </button>
                   </td>
                   <td>
@@ -124,7 +124,7 @@ export default function ResourcePage({ isArchived }) {
                       className="btn btn-link link-danger"
                       onClick={(e) => handleDelete(e, resource)}
                     >
-                      Удаление
+                      Удалить
                     </button>
                   </td>
                 </tr>

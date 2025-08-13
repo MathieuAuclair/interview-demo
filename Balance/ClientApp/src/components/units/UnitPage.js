@@ -48,7 +48,7 @@ export default function UnitPage({ isArchived }) {
       setUnits((prev) => prev.filter((r) => r.id !== unit.id));
 
       setAlert({
-        message: "единица удален успешно",
+        message: "Единица измерения успешно удалена",
         isError: false,
       });
     } catch (error) {
@@ -77,7 +77,7 @@ export default function UnitPage({ isArchived }) {
           navigate(isArchived ? "/dashboard/unit" : "/dashboard/unit/archived");
         }}
       >
-        {isArchived ? "просмотр активных" : "просмотреть архив"}
+        {isArchived ? "Просмотр активных" : "Просмотреть архив"}
       </button>
       {!units || units.length <= 0 ? (
         <p>Нет единица...</p>
@@ -113,7 +113,7 @@ export default function UnitPage({ isArchived }) {
                         });
                       }}
                     >
-                      Обновление
+                      Обновить
                     </button>
                   </td>
                   <td>
@@ -122,7 +122,7 @@ export default function UnitPage({ isArchived }) {
                       className="btn btn-link link-danger"
                       onClick={(e) => handleDelete(e, unit)}
                     >
-                      Удаление
+                      Удалить
                     </button>
                   </td>
                 </tr>
@@ -137,7 +137,7 @@ export default function UnitPage({ isArchived }) {
           navigate(`/dashboard/unit/add`);
         }}
       >
-        Добавить новый единица
+        Добавить новую единицу
       </button>
     </div>
   );

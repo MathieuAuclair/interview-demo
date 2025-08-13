@@ -25,16 +25,16 @@ export default function BalancePage({ isArchived }) {
 
   return (
     <div>
-      <h1>Balance</h1>
+      <h1>Баланс</h1>
       {!balances || balances.length <= 0 ? (
         <p>Нет единица...</p>
       ) : (
         <table className="table">
           <thead>
             <tr>
-              <th>resource</th>
-              <th>unit</th>
-              <th>quantity</th>
+              <th>Ресурс</th>
+              <th>Единица измерения</th>
+              <th>Количество</th>
             </tr>
           </thead>
           <tbody>

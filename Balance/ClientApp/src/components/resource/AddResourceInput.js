@@ -50,7 +50,7 @@ export default function AddResourceInput() {
 
   return (
     <div>
-      <h1>Добавить ресурсы</h1>
+      <h1>Добавить ресурс</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-floating mb-3">
           <input

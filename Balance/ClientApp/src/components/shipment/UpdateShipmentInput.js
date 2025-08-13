@@ -28,13 +28,13 @@ export default function UpdateShipmentInput() {
       });
     });
 
-    fetch("resource").then((response) => {
+    fetch("resource?ignoreArchiveFlag=true").then((response) => {
       response.json().then((resources) => {
         setResources(resources);
       });
     });
 
-    fetch("unit").then((response) => {
+    fetch("unit?ignoreArchiveFlag=true").then((response) => {
       response.json().then((units) => {
         setUnits(units);
       });
@@ -90,7 +90,7 @@ export default function UpdateShipmentInput() {
         navigate(`/dashboard/shipment`, {
           state: {
             message: {
-              message: "Отгрузка успешно обновлен!",
+              message: "Отгрузка успешно обновлена!",
               isError: false,
             },
           },
@@ -169,26 +169,31 @@ export default function UpdateShipmentInput() {
             className="form-control"
             id="floatingInput"
           />
-          <label htmlFor="floatingInput">адрес</label>
+          <label htmlFor="floatingInput">дата</label>
         </div>
-        <select
-          className="form-select"
-          aria-label="Клиент"
-          onChange={(e) => setCustomerId(e.target.value)}
-          required
-        >
-          {customers.map((customer) => {
-            return (
-              <option
-                key={customer.id}
-                value={customer.id}
-                selected={customer.id === customerId ? "selected" : false}
-              >
-                {customer.name}
-              </option>
-            );
-          })}
-        </select>
+        <div className="card p-2 text-small">
+          <label className="text-muted" htmlFor="floatingInput">
+            клиент
+          </label>
+          <select
+            className="form-select"
+            aria-label="Клиент"
+            onChange={(e) => setCustomerId(e.target.value)}
+            required
+          >
+            {customers.map((customer) => {
+              return (
+                <option
+                  key={customer.id}
+                  value={customer.id}
+                  selected={customer.id === customerId ? "selected" : false}
+                >
+                  {customer.name}
+                </option>
+              );
+            })}
+          </select>
+        </div>
         <label
           onClick={() => {
             setIsSigned(!isSigned);
@@ -197,10 +202,10 @@ export default function UpdateShipmentInput() {
             isSigned ? "btn-success" : "btn-outline-secondary"
           }`}
         >
-          {isSigned ? "Signed" : "Processing"}
+          {isSigned ? "Подписан" : "Не подписан"}
         </label>
         <div className="card my-3 p-3">
-          <h3>Resources</h3>
+          <h3>Ресурсы</h3>
           {shipmentResources.map((sr) => {
             return (
               <div className="d-flex flex-column gap-2">
@@ -217,60 +222,84 @@ export default function UpdateShipmentInput() {
                     required
                     className="form-control"
                   />
-                  <label htmlFor="floatingInput">адрес</label>
+                  <label htmlFor="floatingInput">количество</label>
                 </div>
-                <select
-                  className="form-select"
-                  aria-label="Клиент"
-                  onChange={(e) =>
-                    handleShipmentResourceUpdate(
-                      sr.id ?? sr.index,
-                      e.target.value
-                    )
-                  }
-                  required
-                >
-                  {resources.map((resource) => {
-                    return (
-                      <option
-                        key={resource.id}
-                        value={resource.id}
-                        selected={
-                          resource.id === sr.resourceId ? "selected" : false
-                        }
-                      >
-                        {resource.name}
-                      </option>
-                    );
-                  })}
-                </select>
-                <select
-                  className="form-select"
-                  aria-label="Клиент"
-                  onChange={(e) =>
-                    handleShipmentUnitUpdate(sr.id ?? sr.index, e.target.value)
-                  }
-                  required
-                >
-                  {units.map((unit) => {
-                    return (
-                      <option
-                        key={unit.id}
-                        value={unit.id}
-                        selected={unit.id === sr.unitId ? "selected" : false}
-                      >
-                        {unit.name}
-                      </option>
-                    );
-                  })}
-                </select>
+                <div className="card p-2 text-small">
+                  <label className="text-muted" htmlFor="floatingInput">
+                    ресурс
+                  </label>
+                  <select
+                    className="form-select"
+                    aria-label="ресурс"
+                    onChange={(e) =>
+                      handleShipmentResourceUpdate(
+                        sr.id ?? sr.index,
+                        e.target.value
+                      )
+                    }
+                    required
+                  >
+                    {resources
+                      .filter(
+                        (resource) =>
+                          !resource.isArchived || sr.resourceId === resource.id
+                      )
+                      .map((resource) => {
+                        return (
+                          <option
+                            key={resource.id}
+                            value={resource.id}
+                            selected={
+                              resource.id === sr.resourceId ? "selected" : false
+                            }
+                          >
+                            {resource.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                </div>
+                <div className="card p-2 text-small">
+                  <label className="text-muted" htmlFor="floatingInput">
+                    единица измерения
+                  </label>
+                  <select
+                    className="form-select"
+                    aria-label="единица измерения"
+                    onChange={(e) =>
+                      handleShipmentUnitUpdate(
+                        sr.id ?? sr.index,
+                        e.target.value
+                      )
+                    }
+                    required
+                  >
+                    {units
+                      .filter(
+                        (unit) => !unit.isArchived || sr.unitId === unit.id
+                      )
+                      .map((unit) => {
+                        return (
+                          <option
+                            key={unit.id}
+                            value={unit.id}
+                            selected={
+                              unit.id === sr.unitId ? "selected" : false
+                            }
+                          >
+                            {unit.name}
+                          </option>
+                        );
+                      })}
+                  </select>
+                </div>
                 <div className="flex">
                   <button
                     type="button"
                     onClick={() => handleRemoveResource(sr.id ?? sr.index)}
                     className="btn btn-outline-warning"
                   >
-                    remove
+                    удалить
                   </button>
                 </div>
                 <hr />
@@ -292,7 +321,7 @@ export default function UpdateShipmentInput() {
             }
             className="btn btn-outline-success"
           >
-            Add new resource
+            Добавить новый ресурс
           </button>
         </div>
         <button className="btn btn-primary" type="submit">

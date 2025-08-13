@@ -51,7 +51,7 @@ export default function AddCustomerInput() {
 
   return (
     <div>
-      <h1>Добавить отгрузка</h1>
+      <h1>Добавить клиента</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-floating mb-3">
           <input

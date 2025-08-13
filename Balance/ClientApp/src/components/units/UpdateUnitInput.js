@@ -34,7 +34,7 @@ export default function UpdateUnitInput() {
         navigate(`/dashboard/unit`, {
           state: {
             message: {
-              message: "Единица успешно обновлен!",
+              message: "Единица успешно обновлена!",
               isError: false,
             },
           },

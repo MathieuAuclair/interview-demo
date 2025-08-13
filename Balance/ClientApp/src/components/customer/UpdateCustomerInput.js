@@ -59,7 +59,7 @@ export default function UpdateCustomerInput() {
         handleSubmit(customer.isArchived);
       }}
     >
-      <h1>Обновление клиент</h1>
+      <h1>Обновление клиента</h1>
       <div className="form-floating mb-3">
         <input
           value={name}

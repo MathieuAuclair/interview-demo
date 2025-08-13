@@ -58,7 +58,7 @@ export default function UpdateResourceInput() {
         handleSubmit(resource.isArchived);
       }}
     >
-      <h1>Обновление ресурсы</h1>
+      <h1>Обновление ресурса</h1>
       <div className="form-floating mb-3">
         <input
           value={name}

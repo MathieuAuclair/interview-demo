@@ -31,7 +31,7 @@ export default function ShipmentPage({ isArchived }) {
   const handleDelete = async (e, shipment) => {
     e.preventDefault();
 
-    if (!window.confirm(`Вы уверены, что хотите удалить ${shipment.name}?`)) {
+    if (!window.confirm(`Вы уверены, что хотите удалить ${shipment.purchaseOrder}?`)) {
       return;
     }
 
@@ -52,7 +52,7 @@ export default function ShipmentPage({ isArchived }) {
       setshipments((prev) => prev.filter((r) => r.id !== shipment.id));
 
       setAlert({
-        message: "отгрузка удален успешно",
+        message: "Отгрузка успешно удалена!",
         isError: false,
       });
     } catch (error) {
@@ -66,7 +66,7 @@ export default function ShipmentPage({ isArchived }) {
 
   return (
     <div>
-      <h1>Отгрузкы</h1>
+      <h1>Отгрузки</h1>
       {alert && (
         <div
           className={`alert alert-${alert.isError ? "danger" : "info"}`}
@@ -83,7 +83,7 @@ export default function ShipmentPage({ isArchived }) {
           );
         }}
       >
-        {isArchived ? "просмотр активных" : "просмотреть архив"}
+        {isArchived ? "Просмотр активных" : "Просмотреть архив"}
       </button>
       {!shipments || shipments.length <= 0 ? (
         <p>Нет отгрузка...</p>
@@ -95,7 +95,7 @@ export default function ShipmentPage({ isArchived }) {
               <th>Дата</th>
               <th>Клиент</th>
               <th>Статус</th>
-              <th>Ресурс</th>
+              <th>Ресурсы</th>
               <th>Обновление</th>
               <th>Удаление</th>
             </tr>
@@ -119,14 +119,14 @@ export default function ShipmentPage({ isArchived }) {
                         shipment.isSigned ? "success" : "secondary"
                       }`}
                     >
-                      {shipment?.isSigned ? "Signed" : "Shipping"}
+                      {shipment?.isSigned ? "Подписан" : "Не подписан"}
                     </div>
                   </td>
                   <td>
                     <ul>
                       {(shipment?.shipmentResources ?? []).map((sr) => {
                         return (
-                          <li>
+                          <li key={sr.id}>
                             {sr?.quantity} {sr?.unit?.name} -{" "}
                             <b>{sr?.resource?.name}</b>
                           </li>
@@ -144,7 +144,7 @@ export default function ShipmentPage({ isArchived }) {
                         });
                       }}
                     >
-                      Обновление
+                      Обновить
                     </button>
                   </td>
                   <td>
@@ -153,7 +153,7 @@ export default function ShipmentPage({ isArchived }) {
                       className="btn btn-link link-danger"
                       onClick={(e) => handleDelete(e, shipment)}
                     >
-                      Удаление
+                      Удалить
                     </button>
                   </td>
                 </tr>
@@ -168,7 +168,7 @@ export default function ShipmentPage({ isArchived }) {
           navigate(`/dashboard/shipment/add`);
         }}
       >
-        Добавить новый отгрузка
+        Добавить новую отгрузку
       </button>
     </div>
   );

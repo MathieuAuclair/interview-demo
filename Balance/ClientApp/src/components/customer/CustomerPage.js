@@ -52,7 +52,7 @@ export default function CustomerPage({ isArchived }) {
       setCustomers((prev) => prev.filter((r) => r.id !== customer.id));
 
       setAlert({
-        message: "клиент удален успешно",
+        message: "Клиент удален успешно",
         isError: false,
       });
     } catch (error) {
@@ -83,7 +83,7 @@ export default function CustomerPage({ isArchived }) {
           );
         }}
       >
-        {isArchived ? "просмотр активных" : "просмотреть архив"}
+        {isArchived ? "Просмотр активных" : "Просмотреть архив"}
       </button>
       {!customers || customers.length <= 0 ? (
         <p>Нет клиент...</p>
@@ -113,7 +113,7 @@ export default function CustomerPage({ isArchived }) {
                         });
                       }}
                     >
-                      Обновление
+                      Обновить
                     </button>
                   </td>
                   <td>
@@ -122,7 +122,7 @@ export default function CustomerPage({ isArchived }) {
                       className="btn btn-link link-danger"
                       onClick={(e) => handleDelete(e, customer)}
                     >
-                      Удаление
+                      Удалить
                     </button>
                   </td>
                 </tr>

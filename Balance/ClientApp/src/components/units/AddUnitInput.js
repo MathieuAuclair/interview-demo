@@ -35,7 +35,7 @@ export default function AddUnitInput() {
         navigate(`/dashboard/unit`, {
           state: {
             message: {
-              message: "Новый единица успешно добавлен",
+              message: "Новая единица измерения успешно добавлена",
               isError: false,
             },
           },
@@ -50,7 +50,7 @@ export default function AddUnitInput() {
 
   return (
     <div>
-      <h1>Добавить единицы измерения</h1>
+      <h1>Добавить единицу измерения</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-floating mb-3">
           <input

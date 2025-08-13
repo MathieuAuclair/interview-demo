@@ -33,7 +33,7 @@ export default function ReceiptPage({ isArchived }) {
   const handleDelete = async (e, receipt) => {
     e.preventDefault();
 
-    if (!window.confirm(`Вы уверены, что хотите удалить ${receipt.name}?`)) {
+    if (!window.confirm(`Вы уверены, что хотите удалить ${receipt.purchaseOrder}?`)) {
       return;
     }
 
@@ -44,7 +44,7 @@ export default function ReceiptPage({ isArchived }) {
 
       if (!response.ok) {
         setAlert({
-          message: "Не удалось удалить или заархивировать отгрузка",
+          message: "Не удалось удалить или заархивировать поступление",
           isError: true,
         });
 
@@ -68,7 +68,7 @@ export default function ReceiptPage({ isArchived }) {
 
   return (
     <div>
-      <h1>Отгрузкы</h1>
+      <h1>Поступления</h1>
       {alert && (
         <div
           className={`alert alert-${alert.isError ? "danger" : "info"}`}
@@ -85,7 +85,7 @@ export default function ReceiptPage({ isArchived }) {
           );
         }}
       >
-        {isArchived ? "просмотр активных" : "просмотреть архив"}
+        {isArchived ? "Просмотр активных" : "Просмотреть архив"}
       </button>
       {!receipts || receipts.length <= 0 ? (
         <p>Нет отгрузка...</p>
@@ -95,7 +95,7 @@ export default function ReceiptPage({ isArchived }) {
             <tr>
               <th>Номер заказа</th>
               <th>Дата</th>
-              <th>Ресурс</th>
+              <th>Ресурсы</th>
               <th>Обновление</th>
               <th>Удаление</th>
             </tr>
@@ -104,9 +104,7 @@ export default function ReceiptPage({ isArchived }) {
             {receipts.map((receipt) => {
               return (
                 <tr key={receipt.id}>
-                  <td className={isArchivedStyling}>
-                    {receipt.purchaseOrder}
-                  </td>
+                  <td className={isArchivedStyling}>{receipt.purchaseOrder}</td>
                   <td className={isArchivedStyling}>
                     {receipt?.date?.split("T")?.[0]}
                   </td>
@@ -114,7 +112,7 @@ export default function ReceiptPage({ isArchived }) {
                     <ul>
                       {(receipt?.receiptResources ?? []).map((sr) => {
                         return (
-                          <li>
+                          <li key={sr.id}>
                             {sr?.quantity} {sr?.unit?.name} -{" "}
                             <b>{sr?.resource?.name}</b>
                           </li>
@@ -132,7 +130,7 @@ export default function ReceiptPage({ isArchived }) {
                         });
                       }}
                     >
-                      Обновление
+                      Обновить
                     </button>
                   </td>
                   <td>
@@ -141,7 +139,7 @@ export default function ReceiptPage({ isArchived }) {
                       className="btn btn-link link-danger"
                       onClick={(e) => handleDelete(e, receipt)}
                     >
-                      Удаление
+                      Удалить
                     </button>
                   </td>
                 </tr>
@@ -156,7 +154,7 @@ export default function ReceiptPage({ isArchived }) {
           navigate(`/dashboard/receipt/add`);
         }}
       >
-        Добавить новый отгрузка
+        Добавить новое поступление
       </button>
     </div>
   );
