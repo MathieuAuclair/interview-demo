@@ -14,6 +14,9 @@
 ```bash
  sudo pacman -S dotnet-sdk-8.0
  sudo pacman -S aspnet-runtime-8.0
+ sudo pacman -S npm
+ sudo npm install -g n
+ sudo n 18.15.0
  sudo pacman -S docker
 ```
 
