@@ -7,23 +7,12 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  build_and_run_tests:
     runs-on: ubuntu-latest
     container: mcr.microsoft.com/dotnet/sdk:8.0
     steps:
       - uses: actions/checkout@v4
-      - name: Restore dependencies
-        run: dotnet restore
       - name: Build
-        run: dotnet build
-
-  test:
-    runs-on: ubuntu-latest
-    container: mcr.microsoft.com/dotnet/sdk:8.0
-    needs: build
-    steps:
-      - uses: actions/checkout@v4
-      - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet build Balance/WebApp.csproj
       - name: Test
-        run: dotnet test
+        run: dotnet test Balance.Tests/Balance.Tests.csproj
