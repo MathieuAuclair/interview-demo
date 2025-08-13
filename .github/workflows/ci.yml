@@ -38,7 +38,7 @@ jobs:
       - name: Install EF Core CLI
         run: |
           dotnet tool install --global dotnet-ef --version 8.0.19
-          export PATH="$PATH:$HOME/.dotnet/tools"
+          export PATH="$PATH:/github/home/.dotnet/tools"
       - name: Migrations
         run: dotnet ef database update --project Balance/WebApp.csproj
       - name: Test
