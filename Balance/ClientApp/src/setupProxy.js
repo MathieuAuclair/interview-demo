@@ -13,6 +13,7 @@ const context = [
   "/customer",
   "/shipment",
   "/receipt",
+  "/balance",
 ];
 
 const onError = (err, req, resp, target) => {

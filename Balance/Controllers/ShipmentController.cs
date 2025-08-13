@@ -1,3 +1,4 @@
+using Balance.Helpers;
 using Balance.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -72,14 +73,29 @@ namespace Balance.Controller
                 return BadRequest("Уже существует отгрузка с таким же именем.");
             }
 
-            var shipmentResourcesToDelete = _dbContext.ShipmentResources
+            var previousEntity = await _dbContext.Shipments
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.Id == shipment.Id);
+
+            var shipmentResources = await _dbContext.ShipmentResources
                 .Where(sr => sr.ShipmentId == shipment.Id)
                 .AsNoTracking()
-                .ToList()
+                .ToListAsync();
+
+            var shipmentResourcesToDelete = shipmentResources
                 .Where(sr => !shipment.ShipmentResources.Any(s => s.Id == sr.Id));
 
             _dbContext.ShipmentResources.RemoveRange(shipmentResourcesToDelete);
             _dbContext.Shipments.Update(shipment);
+
+
+            BalanceHelper.UpdateBalanceFromShipment(
+                _dbContext,
+                shipmentResources,
+                shipment.ShipmentResources,
+                previousEntity?.IsSigned ?? false,
+                shipment.IsSigned
+            );
 
             await _dbContext.SaveChangesAsync();
 

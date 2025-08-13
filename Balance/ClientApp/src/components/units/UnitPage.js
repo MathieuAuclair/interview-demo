@@ -5,19 +5,18 @@ export default function UnitPage({ isArchived }) {
   const { state } = useLocation();
 
   const [isLoading, setIsLoading] = useState(true);
-  const [units, setunits] = useState([]);
+  const [units, setUnits] = useState([]);
   const [alert, setAlert] = useState(state?.message);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Извлекать обновленные данные только после отправки ресурса
     setIsLoading(true);
 
     fetch(isArchived ? "unit?isArchived=true" : "unit")
       .then((response) => {
         response.json().then((units) => {
-          setunits(units);
+          setUnits(units);
         });
       })
       .finally(() => {
@@ -46,7 +45,7 @@ export default function UnitPage({ isArchived }) {
         return;
       }
 
-      setunits((prev) => prev.filter((r) => r.id !== unit.id));
+      setUnits((prev) => prev.filter((r) => r.id !== unit.id));
 
       setAlert({
         message: "единица удален успешно",

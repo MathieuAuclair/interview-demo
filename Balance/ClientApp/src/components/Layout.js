@@ -13,7 +13,7 @@ export class Layout extends Component {
             <hr />
             <h3>Склад</h3>
             <div className="d-flex flex-column gap-3 my-3">
-              <a className="btn btn-outline-light" href="/">
+              <a className="btn btn-outline-light" href="/dashboard/balance">
                 Баланс
               </a>
               <a className="btn btn-outline-light" href="/dashboard/receipt">

@@ -1,3 +1,4 @@
+using Balance.Helpers;
 using Balance.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -65,14 +66,18 @@ namespace Balance.Controller
                 return BadRequest("Уже существует отгрузка с таким же именем.");
             }
 
-            var recieptResourcesToDelete = _dbContext.ReceiptResources
+            var previousResources = await _dbContext.ReceiptResources
                 .Where(sr => sr.ReceiptId == receipt.Id)
                 .AsNoTracking()
-                .ToList()
+                .ToListAsync();
+
+            var recieptResourcesToDelete = previousResources
                 .Where(sr => !receipt.ReceiptResources.Any(s => s.Id == sr.Id));
 
             _dbContext.ReceiptResources.RemoveRange(recieptResourcesToDelete);
             _dbContext.Receipts.Update(receipt);
+
+            BalanceHelper.UpdateBalanceFromReceipt(_dbContext, previousResources, receipt.ReceiptResources);
 
             await _dbContext.SaveChangesAsync();
 

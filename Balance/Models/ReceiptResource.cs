@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Balance.Interfaces;
 
 namespace Balance.Models
 {
-    public class ReceiptResource
+    public class ReceiptResource : IResource
     {
         [Key]
         public int Id { get; set; }

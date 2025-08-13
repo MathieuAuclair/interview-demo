@@ -11,6 +11,7 @@ import ShipmentPage from "./components/shipment/ShipmentPage";
 import UpdateShipmentInput from "./components/shipment/UpdateShipmentInput";
 import ReceiptPage from "./components/receipt/ReceiptPage";
 import UpdateReceiptInput from "./components/receipt/UpdateReceiptInput";
+import BalancePage from "./components/balance/BalancePage";
 
 const AppRoutes = [
   // Resources
@@ -97,6 +98,11 @@ const AppRoutes = [
   {
     path: "/dashboard/receipt/add",
     element: <UpdateReceiptInput />,
+  },
+  // Balance
+  {
+    path: "/dashboard/balance",
+    element: <BalancePage isArchived={false} />,
   },
 ];
 
