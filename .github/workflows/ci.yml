@@ -17,7 +17,7 @@ jobs:
           - 1433:1433
         env:
           ACCEPT_EULA: Y
-          SA_PASSWORD: "StrongPassw0rd\!"
+          SA_PASSWORD: "StrongPassw0rd!"
         options: >-
           --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'StrongPassw0rd!' -Q 'SELECT 1'" 
           --health-interval=10s 
