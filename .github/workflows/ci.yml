@@ -10,13 +10,25 @@ jobs:
   build_and_run_tests:
     runs-on: ubuntu-latest
     container: mcr.microsoft.com/dotnet/sdk:8.0
+    services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: "StrongPassw0rd!"
+        ports:
+          - 1433:1433
+
     steps:
       - uses: actions/checkout@v4
-      - name: Setup SQL Server
-        uses: microsoft/setup-sqlserver@v1
-        with:
-          version: '2022-latest'
-          sa-password: 'StrongPassw0rd!'
+      - name: Wait for SQL Server to be ready
+        run: |
+          echo "Waiting for SQL Server..."
+          for i in {1..30}; do
+            /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "StrongPassw0rd!" -Q "SELECT 1" && break
+            echo "SQL Server not ready yet..."
+            sleep 5
+          done
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
