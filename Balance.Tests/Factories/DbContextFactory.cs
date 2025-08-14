@@ -14,8 +14,9 @@ namespace Balance.Tests.Factories
                 .Build();
 
             var options = new DbContextOptionsBuilder<BalanceDbContext>()
-                .UseSqlServer(config.GetConnectionString("TestsConnection"))
-                .Options;
+                .UseSqlServer(
+                    Environment.GetEnvironmentVariable("TEST_DB_CONNECTION") ?? config.GetConnectionString("TestsConnection")
+                ).Options;
 
             return new BalanceDbContext(options);
         }
