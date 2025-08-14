@@ -1,5 +1,4 @@
 using Balance.Helpers;
-using Balance.Interfaces;
 using Balance.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,9 +19,17 @@ namespace Balance.Controller
         }
 
         [HttpGet]
-        public async Task<List<Receipt>> Get([FromQuery] List<int?> resourceFilters, [FromQuery] List<int?> unitFilters)
+        public async Task<List<Receipt>> Get(
+            [FromQuery] List<int?> resourceFilters,
+            [FromQuery] List<int?> unitFilters,
+            [FromQuery] string search,
+            [FromQuery] DateTime? after,
+            [FromQuery] DateTime? before)
         {
             var receipts = await _dbContext.Receipts
+                .Where(s => after == null || s.Date >= after)
+                .Where(s => before == null || s.Date <= before)
+                .Where(s => search == null || search.Length <= 0 || s.PurchaseOrder.Contains(search))
                 .Select(r => new Receipt
                 {
                     Id = r.Id,

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import LogisticFilter from "../LogisticFilter";
+import LogisticSearch from "../LogisticSearch";
 
 export default function ShipmentPage() {
   const { state } = useLocation();
@@ -10,11 +11,17 @@ export default function ShipmentPage() {
   const [resourceFilters, setResourceFilters] = useState([]);
   const [unitFilters, setUnitFilters] = useState([]);
 
+  const [dateBefore, setDateBefore] = useState(null);
+  const [dateAfter, setDateAfter] = useState(null);
+  const [search, setSearch] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
     fetch(
-      `shipment?${resourceFilters
+      `shipment?${search.length > 0 ? `search=${search}&` : ""}${
+        dateBefore ? `before=${dateBefore}&` : ""
+      }${dateAfter ? `after=${dateAfter}&` : ""}${resourceFilters
         .map((r) => `resourceFilters=${r}`)
         .join("&")}&${unitFilters.map((u) => `unitFilters=${u}`).join("&")}`
     ).then((response) => {
@@ -22,7 +29,7 @@ export default function ShipmentPage() {
         setshipments(shipments);
       });
     });
-  }, [resourceFilters, unitFilters]);
+  }, [dateAfter, dateBefore, resourceFilters, search, unitFilters]);
 
   const handleDelete = async (e, shipment) => {
     e.preventDefault();
@@ -76,6 +83,11 @@ export default function ShipmentPage() {
         setResourceFilters={setResourceFilters}
         unitFilters={unitFilters}
         setUnitFilters={setUnitFilters}
+      />
+      <LogisticSearch
+        setSearch={setSearch}
+        setDateAfter={setDateAfter}
+        setDateBefore={setDateBefore}
       />
       {!shipments || shipments.errors || shipments.length <= 0 ? (
         <p>Нет отгрузка...</p>

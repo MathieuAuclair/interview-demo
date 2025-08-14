@@ -12,8 +12,13 @@ import UpdateShipmentInput from "./components/shipment/UpdateShipmentInput";
 import ReceiptPage from "./components/receipt/ReceiptPage";
 import UpdateReceiptInput from "./components/receipt/UpdateReceiptInput";
 import BalancePage from "./components/balance/BalancePage";
+import MainPage from "./components/MainPage";
 
 const AppRoutes = [
+  {
+    path: "/",
+    element: <MainPage/>
+  },
   // Resources
   {
     path: "/dashboard/resource",
@@ -68,11 +73,7 @@ const AppRoutes = [
   // Shipments
   {
     path: "/dashboard/shipment",
-    element: <ShipmentPage isArchived={false} />,
-  },
-  {
-    path: "/dashboard/shipment/archived",
-    element: <ShipmentPage isArchived={true} />,
+    element: <ShipmentPage />,
   },
   {
     path: "/dashboard/shipment/update",
@@ -85,11 +86,7 @@ const AppRoutes = [
   // Receipt
   {
     path: "/dashboard/receipt",
-    element: <ReceiptPage isArchived={false} />,
-  },
-  {
-    path: "/dashboard/receipt/archived",
-    element: <ReceiptPage isArchived={true} />,
+    element: <ReceiptPage />,
   },
   {
     path: "/dashboard/receipt/update",
@@ -102,7 +99,7 @@ const AppRoutes = [
   // Balance
   {
     path: "/dashboard/balance",
-    element: <BalancePage isArchived={false} />,
+    element: <BalancePage />,
   },
 ];
 

@@ -8,7 +8,7 @@ export class Layout extends Component {
     return (
       <div>
         <div className="d-flex">
-          <div className="p-3 bg-dark vh-100 w-25 text-center text-white">
+          <div className="p-3 bg-dark min-vh-100 w-25 text-center text-white">
             <h1 className="lead">Управление складом</h1>
             <hr />
             <h3>Склад</h3>
