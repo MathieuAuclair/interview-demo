@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import LogisticFilter from "../LogisticFilter";
 
 export default function ReceiptPage() {
   const { state } = useLocation();
 
-  const [isLoading, setIsLoading] = useState(true);
   const [receipts, setreceipts] = useState([]);
   const [alert, setAlert] = useState(state?.message);
+  const [resourceFilters, setResourceFilters] = useState([]);
+  const [unitFilters, setUnitFilters] = useState([]);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    setIsLoading(true);
-
-    fetch("receipt")
-      .then((response) => {
-        response.json().then((receipts) => {
-          setreceipts(receipts);
-        });
-      })
-      .finally(() => {
-        setIsLoading(false);
+    fetch(
+      `receipt?${resourceFilters
+        .map((r) => `resourceFilters=${r}`)
+        .join("&")}&${unitFilters.map((u) => `unitFilters=${u}`).join("&")}`
+    ).then((response) => {
+      response.json().then((receipts) => {
+        setreceipts(receipts);
       });
-  }, []);
+    });
+  }, [resourceFilters, unitFilters]);
 
   const handleDelete = async (e, receipt) => {
     e.preventDefault();
@@ -60,10 +60,6 @@ export default function ReceiptPage() {
     }
   };
 
-  if (isLoading) {
-    return <p>Загрузка...</p>;
-  }
-
   return (
     <div>
       <h1>Поступления</h1>
@@ -75,7 +71,13 @@ export default function ReceiptPage() {
           {alert.message}
         </div>
       )}
-      {!receipts || receipts.length <= 0 ? (
+      <LogisticFilter
+        resourceFilters={resourceFilters}
+        setResourceFilters={setResourceFilters}
+        unitFilters={unitFilters}
+        setUnitFilters={setUnitFilters}
+      />
+      {!receipts || receipts.errors || receipts.length <= 0 ? (
         <p>Нет отгрузка...</p>
       ) : (
         <table className="table">

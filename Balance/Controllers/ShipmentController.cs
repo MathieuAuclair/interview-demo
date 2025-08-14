@@ -20,10 +20,9 @@ namespace Balance.Controller
         }
 
         [HttpGet]
-        public async Task<List<Shipment>> Get(bool isArchived)
+        public async Task<List<Shipment>> Get([FromQuery] List<int?> resourceFilters, [FromQuery] List<int?> unitFilters)
         {
-            return await _dbContext.Shipments
-                .Where(s => s.IsArchived == isArchived)
+            var shipments = await _dbContext.Shipments
                 .Select(s => new Shipment
                 {
                     Customer = new Customer { Id = s.Customer.Id, Name = s.Customer.Name },
@@ -44,8 +43,12 @@ namespace Balance.Controller
                             Quantity = sr.Quantity,
                         }).ToList()
                 })
-                .AsNoTracking()
                 .ToListAsync();
+
+            return shipments
+                .Where(s => resourceFilters.Count() <= 0 || resourceFilters.Any(f => s.ShipmentResources.Any(rr => rr.ResourceId == f)))
+                .Where(s => unitFilters.Count() <= 0 || unitFilters.Any(f => s.ShipmentResources.Any(rr => rr.ResourceId == f)))
+                .ToList();
         }
 
         [HttpPatch]

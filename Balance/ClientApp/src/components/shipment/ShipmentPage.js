@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import LogisticFilter from "../LogisticFilter";
 
 export default function ShipmentPage() {
   const { state } = useLocation();
 
-  const [isLoading, setIsLoading] = useState(true);
   const [shipments, setshipments] = useState([]);
   const [alert, setAlert] = useState(state?.message);
+  const [resourceFilters, setResourceFilters] = useState([]);
+  const [unitFilters, setUnitFilters] = useState([]);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    setIsLoading(true);
-
-    fetch("shipment")
-      .then((response) => {
-        response.json().then((shipments) => {
-          setshipments(shipments);
-        });
-      })
-      .finally(() => {
-        setIsLoading(false);
+    fetch(
+      `shipment?${resourceFilters
+        .map((r) => `resourceFilters=${r}`)
+        .join("&")}&${unitFilters.map((u) => `unitFilters=${u}`).join("&")}`
+    ).then((response) => {
+      response.json().then((shipments) => {
+        setshipments(shipments);
       });
-  }, []);
+    });
+  }, [resourceFilters, unitFilters]);
 
   const handleDelete = async (e, shipment) => {
     e.preventDefault();
@@ -60,10 +60,6 @@ export default function ShipmentPage() {
     }
   };
 
-  if (isLoading) {
-    return <p>Загрузка...</p>;
-  }
-
   return (
     <div>
       <h1>Отгрузки</h1>
@@ -75,7 +71,13 @@ export default function ShipmentPage() {
           {alert.message}
         </div>
       )}
-      {!shipments || shipments.length <= 0 ? (
+      <LogisticFilter
+        resourceFilters={resourceFilters}
+        setResourceFilters={setResourceFilters}
+        unitFilters={unitFilters}
+        setUnitFilters={setUnitFilters}
+      />
+      {!shipments || shipments.errors || shipments.length <= 0 ? (
         <p>Нет отгрузка...</p>
       ) : (
         <table className="table">

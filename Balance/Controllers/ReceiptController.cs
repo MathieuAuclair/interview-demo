@@ -20,9 +20,9 @@ namespace Balance.Controller
         }
 
         [HttpGet]
-        public async Task<List<Receipt>> Get()
+        public async Task<List<Receipt>> Get([FromQuery] List<int?> resourceFilters, [FromQuery] List<int?> unitFilters)
         {
-            return await _dbContext.Receipts
+            var receipts = await _dbContext.Receipts
                 .Select(r => new Receipt
                 {
                     Id = r.Id,
@@ -39,6 +39,11 @@ namespace Balance.Controller
                     })
                 })
                 .ToListAsync();
+
+            return receipts
+                .Where(r => resourceFilters.Count() <= 0 || resourceFilters.Any(f => r.ReceiptResources.Any(rr => rr.ResourceId == f)))
+                .Where(r => unitFilters.Count() <= 0 || unitFilters.Any(f => r.ReceiptResources.Any(rr => rr.ResourceId == f)))
+                .ToList();
         }
 
         [HttpPatch]
