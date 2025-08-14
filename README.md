@@ -1,4 +1,5 @@
 # Тестовое задание
+[![.NET Build and Test](https://github.com/MathieuAuclair/demo-interview/actions/workflows/ci.yml/badge.svg)](https://github.com/MathieuAuclair/demo-interview/actions/workflows/ci.yml)
 
 - оригинал: https://docs.google.com/document/d/1kysWVjkzO6x0HIIkFC7xxVkklAmdiyWdWtIr--eC3vk/edit?tab=t.0
 - копия: https://docs.google.com/document/d/12rJhkqgascbz46nbfo7ve1ptOzC9FnjYl3vvEMn12Ek/edit?usp=sharing

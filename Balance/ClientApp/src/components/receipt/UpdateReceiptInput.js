@@ -40,7 +40,7 @@ export default function UpdateReceiptInput({ isArchived }) {
     navigate(`/dashboard/receipt`, {
       state: {
         message: {
-          message: "Не удалось обновить поступление.",
+          message: "Не удалось обновить поступление, проверить баланс!",
           isError: true,
         },
       },
@@ -166,6 +166,7 @@ export default function UpdateReceiptInput({ isArchived }) {
                   <input
                     value={sr.quantity}
                     type="number"
+                    min={0}
                     onChange={(e) =>
                       handleReceiptQuantityUpdate(
                         sr.id ?? sr.index,
@@ -280,14 +281,14 @@ export default function UpdateReceiptInput({ isArchived }) {
           className="btn btn-primary"
           type="submit"
           aria-disabled={
-            isValidSubmission ? null : "Поступления не может быть пустой!"
+            isValidSubmission ? null : "Поступления не может быть пустым!"
           }
           disabled={isValidSubmission ? false : "disabled"}
         >
           Сохранить
         </button>
         <i className="text-muted text-center">
-          {isValidSubmission ? null : "Поступления не может быть пустой!"}
+          {isValidSubmission ? null : "Поступления не может быть пустым!"}
         </i>
       </form>
     </div>

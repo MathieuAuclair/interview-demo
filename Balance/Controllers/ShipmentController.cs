@@ -1,4 +1,5 @@
 using Balance.Helpers;
+using Balance.Interfaces;
 using Balance.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -77,12 +78,25 @@ namespace Balance.Controller
                 .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.Id == shipment.Id);
 
-            var shipmentResources = await _dbContext.ShipmentResources
+            var previousShipmentResources = await _dbContext.ShipmentResources
                 .Where(sr => sr.ShipmentId == shipment.Id)
                 .AsNoTracking()
                 .ToListAsync();
 
-            var shipmentResourcesToDelete = shipmentResources
+            var isInvalidBalance = await BalanceHelper.IsInvalidShipmentUpdate(
+                _dbContext,
+                previousShipmentResources,
+                shipment.ShipmentResources.ToList(),
+                previousEntity.IsSigned,
+                shipment.IsSigned
+            );
+
+            if (isInvalidBalance)
+            {
+                return BadRequest("Недостаточный баланс");
+            }
+
+            var shipmentResourcesToDelete = previousShipmentResources
                 .Where(sr => !shipment.ShipmentResources.Any(s => s.Id == sr.Id));
 
             _dbContext.ShipmentResources.RemoveRange(shipmentResourcesToDelete);
@@ -91,7 +105,7 @@ namespace Balance.Controller
 
             BalanceHelper.UpdateBalanceFromShipment(
                 _dbContext,
-                shipmentResources,
+                previousShipmentResources,
                 shipment.ShipmentResources,
                 previousEntity?.IsSigned ?? false,
                 shipment.IsSigned
@@ -106,6 +120,7 @@ namespace Balance.Controller
         public async Task<IActionResult> Delete(int id)
         {
             var entity = await _dbContext.Shipments
+                .Include(e => e.ShipmentResources)
                 .FirstOrDefaultAsync(entity => entity.Id == id);
 
             if (entity == null)
@@ -113,22 +128,20 @@ namespace Balance.Controller
                 return NotFound("Не удалось найти предоставленный идентификатор.");
             }
 
-            try
-            {
-                _dbContext.Shipments.Remove(entity);
-                await _dbContext.SaveChangesAsync();
+            _dbContext.ShipmentResources.RemoveRange(entity.ShipmentResources);
+            _dbContext.Shipments.Remove(entity);
 
-                return Ok("удалено");
-            }
-            catch
-            {
-                entity.IsArchived = true;
+            BalanceHelper.UpdateBalanceFromShipment(
+                _dbContext,
+                entity.ShipmentResources,
+                new List<ShipmentResource>(), // удалить, будет пустым
+                entity.IsSigned,
+                false                         // удаление, не подписано
+            );
 
-                _dbContext.Shipments.Update(entity);
-                await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
-                return Ok("архивированный");
-            }
+            return Ok();
         }
     }
 }

@@ -1,4 +1,5 @@
 using Balance.Helpers;
+using Balance.Interfaces;
 using Balance.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -71,6 +72,17 @@ namespace Balance.Controller
                 .AsNoTracking()
                 .ToListAsync();
 
+            var isInvalidBalance = await BalanceHelper.IsInvalidReceiptUpdate(
+                _dbContext,
+                previousResources,
+                receipt.ReceiptResources.ToList()
+            );
+
+            if (isInvalidBalance)
+            {
+                return BadRequest("Недостаточный баланс");
+            }
+
             var recieptResourcesToDelete = previousResources
                 .Where(sr => !receipt.ReceiptResources.Any(s => s.Id == sr.Id));
 
@@ -82,6 +94,36 @@ namespace Balance.Controller
             await _dbContext.SaveChangesAsync();
 
             return Created();
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var entity = await _dbContext.Receipts
+                .Include(e => e.ReceiptResources)
+                .FirstOrDefaultAsync(entity => entity.Id == id);
+
+            if (entity == null)
+            {
+                return NotFound("Не удалось найти предоставленный идентификатор.");
+            }
+
+            if (await BalanceHelper.IsInvalidReceiptDeletion(_dbContext, id))
+            {
+                return BadRequest("Недостаточный баланс");
+            }
+
+            _dbContext.Receipts.Remove(entity);
+
+            BalanceHelper.UpdateBalanceFromReceipt(
+                _dbContext,
+                entity.ReceiptResources,
+                new List<ReceiptResource>() // удалить, будет пустым
+            );
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }

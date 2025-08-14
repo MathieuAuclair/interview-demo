@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export default function ReceiptPage() {
@@ -44,7 +44,7 @@ export default function ReceiptPage() {
 
       if (!response.ok) {
         setAlert({
-          message: "Не удалось удалить или заархивировать поступление",
+          message: "Не удалось удалить поступление, проверить баланс!",
           isError: true,
         });
 
@@ -54,11 +54,11 @@ export default function ReceiptPage() {
       setreceipts((prev) => prev.filter((r) => r.id !== receipt.id));
 
       setAlert({
-        message: "отгрузка удален успешно",
+        message: "Поступление успешно удалено",
         isError: false,
       });
     } catch (error) {
-      console.error("Ошибка при удалении отгрузка:", error);
+      console.error("Ошибка при удалении поступления:", error);
     }
   };
 

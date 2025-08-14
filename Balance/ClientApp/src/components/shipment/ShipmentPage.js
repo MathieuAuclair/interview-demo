@@ -42,7 +42,7 @@ export default function ShipmentPage() {
 
       if (!response.ok) {
         setAlert({
-          message: "Не удалось удалить или заархивировать отгрузка",
+          message: "Не удалось удалить отгрузка, проверить баланс!",
           isError: true,
         });
 

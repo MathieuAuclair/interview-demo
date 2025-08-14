@@ -12,6 +12,7 @@ export default function UpdateShipmentInput({ isArchived }) {
   const [customers, setCustomers] = useState([]);
   const [resources, setResources] = useState([]);
   const [units, setUnits] = useState([]);
+  const [balances, setBalances] = useState([]);
 
   const [customerId, setCustomerId] = useState(shipment.customerId);
   const [purchaseOrder, setPurchaseOrder] = useState(shipment.purchaseOrder);
@@ -39,6 +40,12 @@ export default function UpdateShipmentInput({ isArchived }) {
         setUnits(units);
       });
     });
+
+    fetch("balance").then((response) => {
+      response.json().then((balance) => {
+        setBalances(balance);
+      });
+    });
   }, []);
 
   useEffect(() => {
@@ -55,7 +62,7 @@ export default function UpdateShipmentInput({ isArchived }) {
     navigate(`/dashboard/shipment`, {
       state: {
         message: {
-          message: "Не удалось обновить отгрузка.",
+          message: "Не удалось обновить отгрузка, проверить баланс.",
           isError: true,
         },
       },
@@ -211,22 +218,34 @@ export default function UpdateShipmentInput({ isArchived }) {
         <div className="card my-3 p-3">
           <h3>Ресурсы</h3>
           {shipmentResources.map((sr) => {
+            const balanceAvailable =
+              shipment.shipmentResources.find((s) => s.id === sr.id)?.quantity ?? 0 +
+                balances.find(
+                  (b) =>
+                    b.unitId === sr.unitId && b.resourceId === sr.resourceId
+                )?.quantity ?? 0;
+
             return (
               <div className="d-flex flex-column gap-2">
-                <div className="form-floating">
-                  <input
-                    value={sr.quantity}
-                    type="number"
-                    onChange={(e) =>
-                      handleShipmentQuantityUpdate(
-                        sr.id ?? sr.index,
-                        e.target.value
-                      )
-                    }
-                    required
-                    className="form-control"
-                  />
-                  <label htmlFor="floatingInput">количество</label>
+                <div className="d-flex">
+                  <div className="form-floating">
+                    <input
+                      value={sr.quantity}
+                      type="number"
+                      max={balanceAvailable}
+                      min={0}
+                      onChange={(e) =>
+                        handleShipmentQuantityUpdate(
+                          sr.id ?? sr.index,
+                          e.target.value
+                        )
+                      }
+                      required
+                      className="form-control"
+                    />
+                    <label htmlFor="floatingInput">количество</label>
+                  </div>
+                  <p className="my-auto mx-3">{balanceAvailable} available</p>
                 </div>
                 <div className="card p-2 text-small">
                   <label className="text-muted" htmlFor="floatingInput">
@@ -238,7 +257,7 @@ export default function UpdateShipmentInput({ isArchived }) {
                     onChange={(e) =>
                       handleShipmentResourceUpdate(
                         sr.id ?? sr.index,
-                        e.target.value
+                        parseInt(e.target.value, 0)
                       )
                     }
                     required
@@ -273,7 +292,7 @@ export default function UpdateShipmentInput({ isArchived }) {
                     onChange={(e) =>
                       handleShipmentUnitUpdate(
                         sr.id ?? sr.index,
-                        e.target.value
+                        parseInt(e.target.value, 0)
                       )
                     }
                     required
@@ -301,8 +320,10 @@ export default function UpdateShipmentInput({ isArchived }) {
                   <button
                     type="button"
                     onClick={() => handleRemoveResource(sr.id ?? sr.index)}
-                    className={`btn btn-link ${isArchived ? "link-warning" : "link-danger"}`}
-                    >
+                    className={`btn btn-link ${
+                      isArchived ? "link-warning" : "link-danger"
+                    }`}
+                  >
                     {isArchived ? "Разархивировать" : "Удалить"}
                   </button>
                 </div>
