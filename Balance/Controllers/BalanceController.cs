@@ -18,7 +18,7 @@ namespace Balance.Controller
         }
 
         [HttpGet]
-        public async Task<List<Models.Balance>> Get()
+        public async Task<List<Models.Balance>> Get([FromQuery] List<int?> resourceFilters, [FromQuery] List<int?> unitFilters)
         {
             return await _dbContext.Balances
                 .Select(b => new Models.Balance
@@ -38,6 +38,8 @@ namespace Balance.Controller
                         Name = b.Unit.Name
                     }
                 })
+                .Where(b => resourceFilters.Count() <= 0 || resourceFilters.Contains(b.ResourceId))
+                .Where(b => unitFilters.Count() <= 0 || unitFilters.Contains(b.UnitId))
                 .ToListAsync();
         }
     }

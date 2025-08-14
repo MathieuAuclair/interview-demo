@@ -16,8 +16,6 @@ export default function ReceiptPage() {
     fetch("receipt")
       .then((response) => {
         response.json().then((receipts) => {
-          console.log(receipts);
-
           setreceipts(receipts);
         });
       })
